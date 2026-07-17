@@ -1,4 +1,5 @@
 using ShiftLogger.Infrastructure;
+using ShiftLogger.Infrastructure.Database;
 
 namespace ShiftLogger.WebApi;
 
@@ -21,6 +22,9 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
+            using var scope = app.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
+            context.SeedData();
             //app.MapOpenApi();
         }
 
