@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ShiftLogger.Infrastructure/ShiftLogger.Infrastructure.csproj" />
+  <Project Path="ShiftLogger.WebApi/ShiftLogger.WebApi.csproj" />
+</Solution>
