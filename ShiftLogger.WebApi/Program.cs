@@ -1,7 +1,7 @@
 using ShiftLogger.Infrastructure;
 using ShiftLogger.Infrastructure.Database;
 
-namespace ShiftLogger.WebApi;
+namespace ShiftLogger.Api;
 
 public class Program
 {
@@ -9,13 +9,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
         var connectionString = builder.Configuration.GetConnectionString("Default");
-        builder.Services.AddInfrastrucutre(connectionString);
-        builder.Services.AddControllers();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        //builder.Services.AddOpenApi();
+
+        builder.Services.AddControllers();
+        builder.Services.AddInfrastrucutre(connectionString);
+
+        //builder.Services.AddTransient<CreateShiftHandler>();
 
         var app = builder.Build();
 
@@ -25,7 +25,6 @@ public class Program
             using var scope = app.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
             context.SeedData();
-            //app.MapOpenApi();
         }
 
         app.UseHttpsRedirection();

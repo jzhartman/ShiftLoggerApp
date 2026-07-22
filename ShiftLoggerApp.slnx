@@ -1,5 +1,11 @@
 <Solution>
-  <Project Path="ShiftLogger.Domain/ShiftLogger.Domain.csproj" />
-  <Project Path="ShiftLogger.Infrastructure/ShiftLogger.Infrastructure.csproj" />
-  <Project Path="ShiftLogger.WebApi/ShiftLogger.WebApi.csproj" />
+  <Folder Name="/clients/">
+    <Project Path="ShiftLogger.Console/ShiftLogger.Console.csproj" Id="9aacc644-fcf7-45d3-aca4-d8c7f26f85e4" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="ShiftLogger.Application/ShiftLogger.Application.csproj" Id="661ef2d9-58dc-49d0-bfc0-fc4fbf4fe255" />
+    <Project Path="ShiftLogger.Domain/ShiftLogger.Domain.csproj" />
+    <Project Path="ShiftLogger.Infrastructure/ShiftLogger.Infrastructure.csproj" />
+    <Project Path="ShiftLogger.WebApi/ShiftLogger.Api.csproj" />
+  </Folder>
 </Solution>
