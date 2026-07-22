@@ -1,3 +1,4 @@
+using ShiftLogger.Application;
 using ShiftLogger.Infrastructure;
 using ShiftLogger.Infrastructure.Database;
 
@@ -14,6 +15,7 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddInfrastrucutre(connectionString);
+        builder.Services.AddApplication();
 
         //builder.Services.AddTransient<CreateShiftHandler>();
 

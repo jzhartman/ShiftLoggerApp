@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ShiftLogger.Application\ShiftLogger.Application.csproj" />
     <ProjectReference Include="..\ShiftLogger.Domain\ShiftLogger.Domain.csproj" />
   </ItemGroup>
 

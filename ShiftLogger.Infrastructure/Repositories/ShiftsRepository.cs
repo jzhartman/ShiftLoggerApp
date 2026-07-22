@@ -12,26 +12,26 @@ public class ShiftsRepository : IShiftsRepository
         _context = context;
     }
 
-    public async Task CreateShift(Shift shift)
+    public async Task CreateShiftAsync(Shift shift)
     {
         await _context.Shifts.AddAsync(shift);
     }
-    public async Task UpdateShiftById(Shift shift)
+    public async Task UpdateShiftByIdAsync(Shift shift)
     {
 
     }
 
-    public async Task<List<Shift>> GetAllShiftsByUserId(int userId)
+    public async Task<List<Shift>> GetAllShiftsByUserIdAsync(int userId)
     {
         return new List<Shift>();
     }
 
-    public async Task DeleteShiftById(int id)
+    public async Task DeleteShiftByIdAsync(int id)
     {
 
     }
 
-    public async Task SaveChanges()
+    public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();
     }
