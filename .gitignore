@@ -361,6 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/ShiftLogger.WebApi/Shifts.db
-/ShiftLogger.WebApi/Shifts.db-shm
-/ShiftLogger.WebApi/Shifts.db-wal

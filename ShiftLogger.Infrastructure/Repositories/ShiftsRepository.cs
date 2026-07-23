@@ -1,4 +1,5 @@
-﻿using ShiftLogger.Domain.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ShiftLogger.Domain.Models;
 using ShiftLogger.Infrastructure.Database;
 
 namespace ShiftLogger.Infrastructure.Repositories;
@@ -21,9 +22,9 @@ public class ShiftsRepository : IShiftsRepository
 
     }
 
-    public async Task<List<Shift>> GetAllShiftsByUserIdAsync(int userId)
+    public async Task<List<Shift>> GetAllShiftsByUserIdAsync(int employeeId)
     {
-        return new List<Shift>();
+        return await _context.Shifts.Where(s => s.EmployeeId == employeeId).ToListAsync();
     }
 
     public async Task DeleteShiftByIdAsync(int id)

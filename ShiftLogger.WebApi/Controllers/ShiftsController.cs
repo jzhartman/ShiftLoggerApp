@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShiftLogger.Api.DTOs;
 using ShiftLogger.Application.Shifts.Commands.CreateShift;
+using ShiftLogger.Application.Shifts.Requests.GetShiftsByEmployeeId;
 using ShiftLogger.Domain.Models;
 
 namespace ShiftLogger.Api.Controllers;
@@ -20,10 +21,13 @@ public class ShiftsController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{userId}")]
-    public async Task<ActionResult<ShiftLoggerApiResponse<List<Shift>>>> GetShiftsByUserId(int userId)
+    [HttpGet("{employeeId}")]
+    public async Task<ActionResult<ShiftLoggerApiResponse<List<Shift>>>> GetShiftsByEmployeeId(
+        int employeeId,
+        [FromServices] GetShiftsByEmployeeIdHandler handler)
     {
-        return Ok();
+        var result = await handler.HandleAsync(new GetShiftsQuery(employeeId), HttpContext.RequestAborted);
+        return Ok(result);
     }
 
 }
