@@ -13,24 +13,12 @@ internal class ShiftConfiguration : IEntityTypeConfiguration<Shift>
         builder.HasKey(s => s.Id);
 
         builder.HasOne(s => s.Employee)
-            .WithMany(u => u.Shifts)
-            .HasForeignKey(s => s.UserId);
+            .WithMany(e => e.Shifts)
+            .HasForeignKey(s => s.EmployeeId);
 
         builder.Property(s => s.ClockInTime)
             .IsRequired();
 
         builder.Property(s => s.ClockOutTime);
-
-        builder.Property(s => s.IsClockedIn)
-            .IsRequired()
-            .HasDefaultValue(true);
-
-        builder.Property(s => s.IsClockedOut)
-            .IsRequired()
-            .HasDefaultValue(false);
-
-        builder.Property(s => s.NeedsReviewed)
-            .IsRequired()
-            .HasDefaultValue(false);
     }
 }

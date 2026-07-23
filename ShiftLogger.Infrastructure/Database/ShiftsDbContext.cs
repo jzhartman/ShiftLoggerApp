@@ -5,10 +5,10 @@ namespace ShiftLogger.Infrastructure.Database;
 
 public class ShiftsDbContext : DbContext
 {
-    public ShiftsDbContext(DbContextOptions options) : base(options)
+    public ShiftsDbContext(DbContextOptions<ShiftsDbContext> options) : base(options)
     {
     }
-    public DbSet<User> Users { get; set; }
+    public DbSet<Employee> Employees { get; set; }
     public DbSet<Shift> Shifts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,38 +20,68 @@ public class ShiftsDbContext : DbContext
     {
         Shifts.RemoveRange(Shifts);
 
-        var employeeAShifts = new List<Shift>
+        var employeeShifts = new List<Shift>
         {
             new Shift
             {
-                ClockInTime = DateTime.Now.AddDays(-3),
-                ClockOutTime = DateTime.Now.AddDays(-3).AddHours(6),
-                IsClockedIn = false,
-                IsClockedOut = true,
-                NeedsReviewed = false
+                ClockInTime = new DateTime(2026, 07, 06, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 06, 17, 00, 00)
+            },
+                        new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 07, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 07, 17, 00, 00)
             },
             new Shift
             {
-                ClockInTime = DateTime.Now.AddDays(-5),
-                ClockOutTime = DateTime.Now.AddDays(-5).AddHours(8),
-                IsClockedIn = false,
-                IsClockedOut = true,
-                NeedsReviewed = false
+                ClockInTime = new DateTime(2026, 07, 08, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 08, 17, 00, 00)
+            },
+            new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 09, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 09, 17, 00, 00)
+            },
+            new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 10, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 10, 17, 00, 00)
+            },
+                        new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 13, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 13, 17, 00, 00)
+            },
+                        new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 14, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 14, 17, 00, 00)
+            },
+            new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 15, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 15, 17, 00, 00)
+            },
+            new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 16, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 16, 17, 00, 00)
+            },
+            new Shift
+            {
+                ClockInTime = new DateTime(2026, 07, 17, 08, 00, 00),
+                ClockOutTime = new DateTime(2026, 07, 17, 17, 00, 00)
             }
         };
 
-        Users.RemoveRange(Users);
+        Employees.RemoveRange(Employees);
 
-        Users.Add(
-            new User
+        Employees.Add(
+            new Employee
             {
                 FirstName = "Jason",
                 LastName = "Hartman",
-                EmployeeId = "123456",
-                IsActive = true,
-                DateCreated = DateTime.Now,
-                DateModified = DateTime.Now,
-                Shifts = employeeAShifts
+                Shifts = employeeShifts
             });
 
         SaveChanges();

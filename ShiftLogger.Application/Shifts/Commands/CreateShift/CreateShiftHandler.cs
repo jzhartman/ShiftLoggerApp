@@ -16,12 +16,9 @@ public class CreateShiftHandler
     {
         await _shiftsRepository.CreateShiftAsync(new Shift
         {
-            UserId = command.UserId,
+            EmployeeId = command.EmployeeId,
             ClockInTime = command.ClockInTime,
             ClockOutTime = command.ClockOutTime,
-            IsClockedIn = command.IsClockedIn,
-            IsClockedOut = command.IsClockedOut,
-            NeedsReviewed = command.NeedsReviewed,
         });
 
         await _shiftsRepository.SaveChangesAsync();
