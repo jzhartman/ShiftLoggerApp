@@ -17,14 +17,23 @@ public class ShiftsRepository : IShiftsRepository
     {
         await _context.Shifts.AddAsync(shift);
     }
-    public async Task UpdateShiftByIdAsync(Shift shift)
-    {
-
-    }
 
     public async Task<List<Shift>> GetAllShiftsByUserIdAsync(int employeeId)
     {
         return await _context.Shifts.Where(s => s.EmployeeId == employeeId).ToListAsync();
+    }
+
+    public async Task UpdateShiftByIdAsync(Shift updatedShift)
+    {
+        var originalShift = await _context.Shifts.FindAsync(updatedShift.Id);
+
+        if (originalShift is not null)
+        {
+            originalShift.EmployeeId = updatedShift.EmployeeId;
+            originalShift.ClockInTime = updatedShift.ClockInTime;
+            originalShift.ClockOutTime = updatedShift.ClockOutTime;
+            originalShift.Employee = updatedShift.Employee;
+        }
     }
 
     public async Task DeleteShiftByIdAsync(int id)

@@ -17,6 +17,7 @@ public class Program
         builder.Services.AddInfrastrucutre(connectionString);
         builder.Services.AddApplication();
 
+
         //builder.Services.AddTransient<CreateShiftHandler>();
 
         var app = builder.Build();
