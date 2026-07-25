@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShiftLogger.Api.DTOs;
 using ShiftLogger.Application.Shifts.Commands.CreateShift;
+using ShiftLogger.Application.Shifts.Commands.DeleteShift;
 using ShiftLogger.Application.Shifts.Commands.UpdateShift;
 using ShiftLogger.Application.Shifts.Requests.GetShiftsByEmployeeId;
 using ShiftLogger.Domain.Models;
@@ -13,7 +14,7 @@ namespace ShiftLogger.Api.Controllers;
 public class ShiftsController : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult> CreateShift(
+    public async Task<ActionResult> CreateShiftAsync(
         CreateShiftCommand command,
         [FromServices] CreateShiftHandler handler)
     {
@@ -23,7 +24,7 @@ public class ShiftsController : ControllerBase
     }
 
     [HttpGet("{employeeId}")]
-    public async Task<ActionResult<ShiftLoggerApiResponse<List<Shift>>>> GetShiftsByEmployeeId(
+    public async Task<ActionResult<ShiftLoggerApiResponse<List<Shift>>>> GetShiftsByEmployeeIdAsync(
         int employeeId,
         [FromServices] GetShiftsByEmployeeIdHandler handler)
     {
@@ -31,8 +32,8 @@ public class ShiftsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPut("{shift.Id}")]
-    public async Task<ActionResult> UpdateShift(
+    [HttpPut("{command.Id}")]
+    public async Task<ActionResult> UpdateShiftAsync(
         UpdateShiftCommand command,
         [FromServices] UpdateShiftHandler handler)
     {
@@ -41,4 +42,12 @@ public class ShiftsController : ControllerBase
         return Ok();
     }
 
+    [HttpDelete("{command.Id}")]
+    public async Task<IActionResult> DeleteShiftAsync(
+        DeleteShiftCommand command,
+        [FromServices] DeleteShiftByIdHandler handler)
+    {
+        await handler.HandleAsync(command);
+        return Ok();
+    }
 }

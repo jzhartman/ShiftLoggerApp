@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ShiftLogger.Application.Shifts.Commands.CreateShift;
+using ShiftLogger.Application.Shifts.Commands.DeleteShift;
 using ShiftLogger.Application.Shifts.Commands.UpdateShift;
 using ShiftLogger.Application.Shifts.Requests.GetShiftsByEmployeeId;
 
@@ -12,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<CreateShiftHandler>();
         services.AddScoped<GetShiftsByEmployeeIdHandler>();
         services.AddScoped<UpdateShiftHandler>();
+        services.AddScoped<DeleteShiftByIdHandler>();
 
         return services;
     }

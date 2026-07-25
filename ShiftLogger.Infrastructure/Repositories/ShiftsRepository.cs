@@ -36,9 +36,9 @@ public class ShiftsRepository : IShiftsRepository
         }
     }
 
-    public async Task DeleteShiftByIdAsync(int id)
+    public async Task DeleteShiftAsync(Shift shift)
     {
-
+        _context.Shifts.Remove(shift);
     }
 
     public async Task SaveChangesAsync()

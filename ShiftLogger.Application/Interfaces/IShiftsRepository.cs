@@ -5,7 +5,7 @@ namespace ShiftLogger.Infrastructure.Repositories;
 public interface IShiftsRepository
 {
     Task CreateShiftAsync(Shift shift);
-    Task DeleteShiftByIdAsync(int id);
+    Task DeleteShiftAsync(Shift shift);
     Task<List<Shift>> GetAllShiftsByUserIdAsync(int userId);
     Task UpdateShiftByIdAsync(Shift shift);
     Task SaveChangesAsync();
