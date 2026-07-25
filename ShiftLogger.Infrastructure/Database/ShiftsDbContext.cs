@@ -18,73 +18,79 @@ public class ShiftsDbContext : DbContext
 
     public void SeedData()
     {
-        Shifts.RemoveRange(Shifts);
-
-        var employeeShifts = new List<Shift>
+        if (!(Shifts.Count() > 0))
         {
-            new Shift
+            var employeeShifts = new List<Shift>
             {
-                ClockInTime = new DateTime(2026, 07, 06, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 06, 17, 00, 00)
-            },
-                        new Shift
+                new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 06, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 06, 17, 00, 00)
+                },
+                            new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 07, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 07, 17, 00, 00)
+                },
+                new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 08, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 08, 17, 00, 00)
+                },
+                new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 09, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 09, 17, 00, 00)
+                },
+                new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 10, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 10, 17, 00, 00)
+                },
+                            new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 13, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 13, 17, 00, 00)
+                },
+                            new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 14, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 14, 17, 00, 00)
+                },
+                new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 15, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 15, 17, 00, 00)
+                },
+                new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 16, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 16, 17, 00, 00)
+                },
+                new Shift
+                {
+                    ClockInTime = new DateTime(2026, 07, 17, 08, 00, 00),
+                    ClockOutTime = new DateTime(2026, 07, 17, 17, 00, 00)
+                }
+            };
+
+            if (!(Employees.Count() > 0))
             {
-                ClockInTime = new DateTime(2026, 07, 07, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 07, 17, 00, 00)
-            },
-            new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 08, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 08, 17, 00, 00)
-            },
-            new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 09, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 09, 17, 00, 00)
-            },
-            new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 10, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 10, 17, 00, 00)
-            },
-                        new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 13, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 13, 17, 00, 00)
-            },
-                        new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 14, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 14, 17, 00, 00)
-            },
-            new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 15, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 15, 17, 00, 00)
-            },
-            new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 16, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 16, 17, 00, 00)
-            },
-            new Shift
-            {
-                ClockInTime = new DateTime(2026, 07, 17, 08, 00, 00),
-                ClockOutTime = new DateTime(2026, 07, 17, 17, 00, 00)
+                Employees.Add(
+                    new Employee
+                    {
+                        FirstName = "Jason",
+                        LastName = "Hartman",
+                        Shifts = employeeShifts
+                    });
+
+                SaveChanges();
             }
-        };
+        }
 
         Employees.RemoveRange(Employees);
 
-        Employees.Add(
-            new Employee
-            {
-                FirstName = "Jason",
-                LastName = "Hartman",
-                Shifts = employeeShifts
-            });
 
-        SaveChanges();
     }
 
 }
