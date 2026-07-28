@@ -1,9 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ShiftLogger.Domain.Validation.Errors;
 
 namespace ShiftLogger.Domain.Validation;
 
-internal class Result
+public record Result
 {
+    public bool IsSuccess { get; }
+    public bool IsFailiure => !IsSuccess;
+    public List<Error> Errors { get; }
+
+    protected Result(bool isSuccess, IEnumerable<Error> errors)
+    {
+        IsSuccess = isSuccess;
+        Errors = errors.ToList();
+    }
+
+    public static Result Success() => new(true, new List<Error>());
+    public static Result Failure(params Error[] errors) => new(false, errors);
+    public static Result Failure(IEnumerable<Error> errors) => new(false, errors);
+}
+
+public record Result<T> : Result
+{
+    public T? Value { get; }
+
+    private Result(bool isSuccess, T? value, IEnumerable<Error> errors) : base(isSuccess, errors)
+    {
+        Value = value;
+    }
+
+    public static Result<T> Success(T value) => new Result<T>(true, value, new List<Error>());
+    public static new Result<T> Failure(params Error[] errors) => new(false, default, errors);
+    public static new Result<T> Failure(IEnumerable<Error> errors) => new(false, default, errors);
 }
