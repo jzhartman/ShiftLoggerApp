@@ -1,13 +1,15 @@
 ﻿using ShiftLogger.Domain.Models;
+using ShiftLogger.Domain.Validation;
 
 namespace ShiftLogger.Infrastructure.Repositories;
 
 public interface IShiftsRepository
 {
-    Task CreateShiftAsync(Shift shift);
-    Task DeleteShiftAsync(Shift shift);
-    Task<List<Shift>> GetAllShiftsByUserIdAsync(int userId);
-    Task UpdateShiftByIdAsync(Shift shift);
-    Task SaveChangesAsync();
-    Task DeleteAllShiftsByEmployeeId(int employeeId);
+    Task<Result> CreateShiftAsync(Shift shift);
+    Task<Result> DeleteShiftAsync(Shift shift);
+    Task<Result<List<Shift>>> GetAllShiftsByUserIdAsync(int userId);
+    Task<Result> UpdateShiftByIdAsync(Shift shift);
+    Task<Result> SaveChangesAsync();
+    Task<Result> DeleteAllShiftsByEmployeeId(int employeeId);
+    Task<Result<bool>> ShiftExistsById(int id);
 }
