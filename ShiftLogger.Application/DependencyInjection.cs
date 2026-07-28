@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ShiftLogger.Application.Employees.Commands.CreateEmployee;
+using ShiftLogger.Application.Employees.Commands.DeleteEmployee;
+using ShiftLogger.Application.Employees.Commands.UpdateEmployee;
+using ShiftLogger.Application.Employees.Requests.GetAllEmployees;
 using ShiftLogger.Application.Shifts.Commands.CreateShift;
 using ShiftLogger.Application.Shifts.Commands.DeleteShift;
 using ShiftLogger.Application.Shifts.Commands.UpdateShift;
@@ -14,6 +18,11 @@ public static class DependencyInjection
         services.AddScoped<GetShiftsByEmployeeIdHandler>();
         services.AddScoped<UpdateShiftHandler>();
         services.AddScoped<DeleteShiftHandler>();
+
+        services.AddScoped<CreateEmployeeHandler>();
+        services.AddScoped<GetAllEmpoyeesHandler>();
+        services.AddScoped<UpdateEmployeeHandler>();
+        services.AddScoped<DeleteEmployeeHandler>();
 
         return services;
     }

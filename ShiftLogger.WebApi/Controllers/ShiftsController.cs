@@ -43,7 +43,7 @@ public class ShiftsController : ControllerBase
     }
 
     [HttpDelete("{command.Id}")]
-    public async Task<IActionResult> DeleteShiftAsync(
+    public async Task<ActionResult> DeleteShiftAsync(
         DeleteShiftCommand command,
         [FromServices] DeleteShiftHandler handler)
     {
