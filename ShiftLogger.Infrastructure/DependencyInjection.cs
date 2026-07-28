@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddDbContext<ShiftsDbContext>(opt => opt.UseSqlite(connectionString));
 
         services.AddTransient<IShiftsRepository, ShiftsRepository>();
+        services.AddTransient<IEmployeeRepository, EmployeeRepository>();
 
         return services;
     }
