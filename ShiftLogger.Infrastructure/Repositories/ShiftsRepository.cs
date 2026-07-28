@@ -41,6 +41,11 @@ public class ShiftsRepository : IShiftsRepository
         _context.Shifts.Remove(shift);
     }
 
+    public async Task DeleteAllShiftsByEmployeeId(int employeeId)
+    {
+        await _context.Shifts.Where(s => s.EmployeeId == employeeId).ExecuteDeleteAsync();
+    }
+
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();

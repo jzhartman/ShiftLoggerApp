@@ -12,17 +12,17 @@ public class EmployeeRepository : IEmployeeRepository
     {
         _context = context;
     }
-    public async Task CreateEmployee(Employee employee)
+    public async Task CreateEmployeeAsync(Employee employee)
     {
         await _context.Employees.AddAsync(employee);
     }
-    public async Task<List<Employee>> GetAll()
+    public async Task<List<Employee>> GetAllAsync()
     {
         var employees = await _context.Employees.ToListAsync();
 
         return employees;
     }
-    public async Task UpdateEmployee(Employee employee)
+    public async Task UpdateEmployeeAsync(Employee employee)
     {
         var originalEmployee = await _context.Employees.FindAsync(employee.Id);
 
@@ -32,7 +32,7 @@ public class EmployeeRepository : IEmployeeRepository
             originalEmployee.LastName = employee.LastName;
         }
     }
-    public async Task DeleteEmployee(Employee employee)
+    public async Task DeleteEmployeeAsync(Employee employee)
     {
         _context.Employees.Remove(employee);
     }

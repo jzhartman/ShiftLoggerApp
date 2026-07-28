@@ -45,7 +45,7 @@ public class ShiftsController : ControllerBase
     [HttpDelete("{command.Id}")]
     public async Task<IActionResult> DeleteShiftAsync(
         DeleteShiftCommand command,
-        [FromServices] DeleteShiftByIdHandler handler)
+        [FromServices] DeleteShiftHandler handler)
     {
         await handler.HandleAsync(command);
         return Ok();

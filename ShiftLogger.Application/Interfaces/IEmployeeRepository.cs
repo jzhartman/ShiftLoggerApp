@@ -4,9 +4,9 @@ namespace ShiftLogger.Infrastructure.Repositories;
 
 public interface IEmployeeRepository
 {
-    Task CreateEmployee(Employee employee);
-    Task DeleteEmployee(Employee employee);
-    Task<List<Employee>> GetAll();
+    Task CreateEmployeeAsync(Employee employee);
+    Task DeleteEmployeeAsync(Employee employee);
+    Task<List<Employee>> GetAllAsync();
     Task SaveChangesAsync();
-    Task UpdateEmployee(Employee employee);
+    Task UpdateEmployeeAsync(Employee employee);
 }

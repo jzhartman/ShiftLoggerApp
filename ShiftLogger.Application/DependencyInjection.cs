@@ -13,7 +13,7 @@ public static class DependencyInjection
         services.AddScoped<CreateShiftHandler>();
         services.AddScoped<GetShiftsByEmployeeIdHandler>();
         services.AddScoped<UpdateShiftHandler>();
-        services.AddScoped<DeleteShiftByIdHandler>();
+        services.AddScoped<DeleteShiftHandler>();
 
         return services;
     }

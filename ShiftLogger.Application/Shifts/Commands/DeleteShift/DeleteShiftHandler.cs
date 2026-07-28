@@ -3,11 +3,11 @@ using ShiftLogger.Infrastructure.Repositories;
 
 namespace ShiftLogger.Application.Shifts.Commands.DeleteShift;
 
-public class DeleteShiftByIdHandler
+public class DeleteShiftHandler
 {
     private readonly IShiftsRepository _shiftsRepository;
 
-    public DeleteShiftByIdHandler(IShiftsRepository shiftsRepository)
+    public DeleteShiftHandler(IShiftsRepository shiftsRepository)
     {
         _shiftsRepository = shiftsRepository;
     }

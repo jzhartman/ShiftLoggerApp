@@ -9,4 +9,5 @@ public interface IShiftsRepository
     Task<List<Shift>> GetAllShiftsByUserIdAsync(int userId);
     Task UpdateShiftByIdAsync(Shift shift);
     Task SaveChangesAsync();
+    Task DeleteAllShiftsByEmployeeId(int employeeId);
 }
