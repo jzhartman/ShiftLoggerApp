@@ -46,6 +46,7 @@ public class ShiftsRepository : IShiftsRepository
         }
     }
 
+    // ToDo: Change update method to not use this style
     public async Task<Result> UpdateShiftByIdAsync(Shift updatedShift)
     {
         try
@@ -53,7 +54,7 @@ public class ShiftsRepository : IShiftsRepository
             var originalShiftResponse = await _context.Shifts.FindAsync(updatedShift.Id);
 
             if (originalShiftResponse is null)
-                return Result.Failure(Errors.ShiftNotFound);
+                return Result.Failure(Errors.ShiftIdNotFound);
 
             if (originalShiftResponse is not null)
             {
@@ -88,7 +89,9 @@ public class ShiftsRepository : IShiftsRepository
     {
         try
         {
-            await _context.Shifts.Where(s => s.EmployeeId == employeeId).ExecuteDeleteAsync();
+            var result = await _context.Shifts.Where(s => s.EmployeeId == employeeId).ExecuteDeleteAsync();
+
+            return (result > 0) ? Result.Success() : Result.Failure(Errors.ShiftsNotFoundForEmployeeId);
         }
         catch (Exception ex)
         {
@@ -98,7 +101,16 @@ public class ShiftsRepository : IShiftsRepository
 
     public async Task<Result> SaveChangesAsync()
     {
-        await _context.SaveChangesAsync();
+        try
+        {
+            var result = await _context.SaveChangesAsync();
+
+            return (result > 0) ? Result.Success() : Result.Failure(Errors.NoSaveData);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error("DatabaseError", ex.Message));
+        }
     }
 
     public async Task<Result<bool>> ShiftExistsById(int id)
