@@ -5,7 +5,7 @@ namespace ShiftLogger.Domain.Validation;
 public record Result
 {
     public bool IsSuccess { get; }
-    public bool IsFailiure => !IsSuccess;
+    public bool IsFailure => !IsSuccess;
     public List<Error> Errors { get; }
 
     protected Result(bool isSuccess, IEnumerable<Error> errors)
