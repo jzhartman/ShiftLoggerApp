@@ -8,4 +8,7 @@
     <Project Path="ShiftLogger.Infrastructure/ShiftLogger.Infrastructure.csproj" />
     <Project Path="ShiftLogger.WebApi/ShiftLogger.Api.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="ShiftLogger.Tests/ShiftLogger.Tests.csproj" Id="6dd6566f-63f0-45de-a2a8-92837a320635" />
+  </Folder>
 </Solution>
