@@ -16,22 +16,22 @@ public class DeleteShiftHandler
 
     public async Task<Result> HandleAsync(DeleteShiftCommand command)
     {
-        var result = await _shiftsRepository.ShiftExistsById(command.Id);
-
-        if (result is null || result.Value == false)
-            return Result.Failure(Errors.ShiftNotFound);
-
-        if (result.IsFailiure)
-            return result;
-
-        await _shiftsRepository.DeleteShiftAsync(new Shift
+        var shiftToDelete = new Shift
         {
             Id = command.Id,
             EmployeeId = command.EmployeeId,
             ClockInTime = command.ClockInTime,
             ClockOutTime = command.ClockOutTime
-        });
+        };
 
-        return Result.Success();
+        var result = await _shiftsRepository.ShiftExistsById(shiftToDelete.Id);
+
+        if (result is null || result.Value == false)
+            return Result.Failure(Errors.ShiftIdNotFound);
+
+        if (result.IsFailure)
+            return result;
+
+        return await _shiftsRepository.DeleteShiftAsync(shiftToDelete);
     }
 }
