@@ -28,7 +28,7 @@ public class ShiftsController : ControllerBase
         int employeeId,
         [FromServices] GetShiftsByEmployeeIdHandler handler)
     {
-        var result = await handler.HandleAsync(new GetShiftsQuery(employeeId), HttpContext.RequestAborted);
+        var result = await handler.HandleAsync(new GetShiftsQuery(employeeId));
         return Ok(result);
     }
 
