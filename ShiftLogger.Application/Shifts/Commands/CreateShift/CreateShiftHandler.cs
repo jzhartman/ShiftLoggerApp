@@ -1,4 +1,6 @@
 ﻿using ShiftLogger.Domain.Models;
+using ShiftLogger.Domain.Validation;
+using ShiftLogger.Domain.Validation.Errors;
 using ShiftLogger.Infrastructure.Repositories;
 
 namespace ShiftLogger.Application.Shifts.Commands.CreateShift;
@@ -6,21 +8,39 @@ namespace ShiftLogger.Application.Shifts.Commands.CreateShift;
 public class CreateShiftHandler
 {
     private readonly IShiftsRepository _shiftsRepository;
+    private readonly IEmployeeRepository _employeeRepository;
 
-    public CreateShiftHandler(IShiftsRepository shiftsRepository)
+    public CreateShiftHandler(IShiftsRepository shiftsRepository, IEmployeeRepository employeeRepository)
     {
         _shiftsRepository = shiftsRepository;
+        _employeeRepository = employeeRepository;
     }
 
-    public async Task HandleAsync(CreateShiftCommand command)
+    public async Task<Result> HandleAsync(CreateShiftCommand command)
     {
-        await _shiftsRepository.CreateShiftAsync(new Shift
+        var newShift = new Shift()
         {
             EmployeeId = command.EmployeeId,
             ClockInTime = command.ClockInTime,
-            ClockOutTime = command.ClockOutTime,
-        });
+            ClockOutTime = command.ClockOutTime
+        };
 
-        await _shiftsRepository.SaveChangesAsync();
+        var employeeExistsResult = await _employeeRepository.EmployeeExistsById(newShift.EmployeeId);
+        if (!employeeExistsResult.Value)
+            return Result.Failure(employeeExistsResult.Errors);
+
+        if (command.ClockInTime > command.ClockOutTime)
+            return Result.Failure(Errors.ClockInTimePrecedesClockOutTime);
+
+        if ((await _shiftsRepository.OverlapsExistingShift(newShift)).Value)
+            return Result.Failure(Errors.NewShiftOverlapsExistingShift);
+
+
+        var createResult = await _shiftsRepository.CreateShiftAsync(newShift);
+
+        if (createResult.IsFailure)
+            return createResult;
+
+        return await _shiftsRepository.SaveChangesAsync();
     }
 }
