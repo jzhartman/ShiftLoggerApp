@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftLogger.Domain.Models;
+using ShiftLogger.Domain.Validation;
+using ShiftLogger.Domain.Validation.Errors;
 using ShiftLogger.Infrastructure.Database;
 
 namespace ShiftLogger.Infrastructure.Repositories;
@@ -22,14 +24,15 @@ public class EmployeeRepository : IEmployeeRepository
 
         return employees;
     }
-    public async Task UpdateEmployeeAsync(Employee employee)
+    // ToDo: Change update method to not use this style
+    public async Task UpdateEmployeeAsync(Employee updatedEmployee)
     {
-        var originalEmployee = await _context.Employees.FindAsync(employee.Id);
+        var originalEmployee = await _context.Employees.FindAsync(updatedEmployee.Id);
 
         if (originalEmployee is not null)
         {
-            originalEmployee.FirstName = employee.FirstName;
-            originalEmployee.LastName = employee.LastName;
+            originalEmployee.FirstName = updatedEmployee.FirstName;
+            originalEmployee.LastName = updatedEmployee.LastName;
         }
     }
     public async Task DeleteEmployeeAsync(Employee employee)
@@ -39,5 +42,18 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();
+    }
+    public async Task<Result<bool>> EmployeeExistsById(int id)
+    {
+        try
+        {
+            var response = await _context.Employees.FindAsync(id);
+
+            return (response is null) ? Result<bool>.Success(true) : Result<bool>.Failure(Errors.EmployeeNotFound);
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
+        }
     }
 }

@@ -128,4 +128,40 @@ public class ShiftsRepository : IShiftsRepository
             return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
+
+    public async Task<Result<bool>> OverlapsExistingShift(Shift shift)
+    {
+        try
+        {
+            var response = await _context.Shifts
+                .AnyAsync(s =>
+                    s.EmployeeId == shift.EmployeeId &&
+                    shift.ClockInTime < s.ClockOutTime &&
+                    shift.ClockOutTime > s.ClockInTime);
+
+            return Result<bool>.Success(response) ?? Result<bool>.Failure(Errors.ShiftOverlapReturnedNull);
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
+        }
+    }
+    public async Task<Result<bool>> OverlapsExistingShiftsExcludingCurrent(Shift shift)
+    {
+        try
+        {
+            var response = await _context.Shifts
+                .AnyAsync(s =>
+                    s.EmployeeId == shift.EmployeeId &&
+                    s.Id != shift.Id &&
+                    shift.ClockInTime < s.ClockOutTime &&
+                    shift.ClockOutTime > s.ClockInTime);
+
+            return Result<bool>.Success(response) ?? Result<bool>.Failure(Errors.ShiftOverlapReturnedNull);
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
+        }
+    }
 }

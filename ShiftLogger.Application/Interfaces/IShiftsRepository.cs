@@ -12,4 +12,6 @@ public interface IShiftsRepository
     Task<Result> SaveChangesAsync();
     Task<Result> DeleteAllShiftsByEmployeeId(int employeeId);
     Task<Result<bool>> ShiftExistsById(int id);
+    Task<Result<bool>> OverlapsExistingShift(Shift shift);
+    Task<Result<bool>> OverlapsExistingShiftsExcludingCurrent(Shift shift);
 }
