@@ -61,7 +61,6 @@ public class ShiftsRepository : IShiftsRepository
                 originalShiftResponse.EmployeeId = updatedShift.EmployeeId;
                 originalShiftResponse.ClockInTime = updatedShift.ClockInTime;
                 originalShiftResponse.ClockOutTime = updatedShift.ClockOutTime;
-                originalShiftResponse.Employee = updatedShift.Employee;
             }
 
             return Result.Success();
@@ -76,7 +75,10 @@ public class ShiftsRepository : IShiftsRepository
     {
         try
         {
-            _context.Shifts.Remove(shift);
+            await _context.Shifts
+                .Where(s => s.Id == shift.Id)
+                .ExecuteDeleteAsync();
+
             return Result.Success();
         }
         catch (Exception ex)
