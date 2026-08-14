@@ -14,34 +14,84 @@ public class EmployeeRepository : IEmployeeRepository
     {
         _context = context;
     }
-    public async Task CreateEmployeeAsync(Employee employee)
+    public async Task<Result> CreateEmployeeAsync(Employee employee)
     {
-        await _context.Employees.AddAsync(employee);
-    }
-    public async Task<List<Employee>> GetAllAsync()
-    {
-        var employees = await _context.Employees.ToListAsync();
-
-        return employees;
-    }
-    // ToDo: Change update method to not use this style
-    public async Task UpdateEmployeeAsync(Employee updatedEmployee)
-    {
-        var originalEmployee = await _context.Employees.FindAsync(updatedEmployee.Id);
-
-        if (originalEmployee is not null)
+        try
         {
-            originalEmployee.FirstName = updatedEmployee.FirstName;
-            originalEmployee.LastName = updatedEmployee.LastName;
+            var result = await _context.Employees.AddAsync(employee);
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-    public async Task DeleteEmployeeAsync(Employee employee)
+    public async Task<Result<List<Employee>>> GetAllAsync()
     {
-        _context.Employees.Remove(employee);
+        try
+        {
+            var response = await _context.Employees.ToListAsync();
+
+            if (response is null || response.Count == 0)
+                response = new List<Employee>();
+
+            return Result<List<Employee>>.Success(response);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<Employee>>.Failure(new Error("DatabaseError", ex.Message));
+        }
     }
-    public async Task SaveChangesAsync()
+    // ToDo: Change update method to not use this style
+    public async Task<Result> UpdateEmployeeAsync(Employee updatedEmployee)
     {
-        await _context.SaveChangesAsync();
+        try
+        {
+            var originalEmployeeResponse = await _context.Employees.FindAsync(updatedEmployee.Id);
+
+            if (originalEmployeeResponse is null)
+                return Result.Failure(Errors.EmployeeNotFound); // ToDo: Review this error code
+
+
+            originalEmployeeResponse.FirstName = updatedEmployee.FirstName;
+            originalEmployeeResponse.LastName = updatedEmployee.LastName;
+
+            return Result.Success();
+
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error("DatabaseError", ex.Message));
+        }
+    }
+    public async Task<Result> DeleteEmployeeAsync(Employee employee)
+    {
+        try
+        {
+            await _context.Employees
+                .Where(e => e.Id == employee.Id)
+                .ExecuteDeleteAsync();
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error("DatabaseError", ex.Message));
+        }
+    }
+    public async Task<Result> SaveChangesAsync()
+    {
+        try
+        {
+            var result = await _context.SaveChangesAsync();
+
+            return (result > 0) ? Result.Success() : Result.Failure(Errors.NoSaveData);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error("DatabaseError", ex.Message));
+        }
     }
     public async Task<Result<bool>> EmployeeExistsById(int id)
     {

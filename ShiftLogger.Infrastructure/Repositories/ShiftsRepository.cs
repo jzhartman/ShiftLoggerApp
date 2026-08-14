@@ -56,12 +56,10 @@ public class ShiftsRepository : IShiftsRepository
             if (originalShiftResponse is null)
                 return Result.Failure(Errors.ShiftIdNotFound);
 
-            if (originalShiftResponse is not null)
-            {
-                originalShiftResponse.EmployeeId = updatedShift.EmployeeId;
-                originalShiftResponse.ClockInTime = updatedShift.ClockInTime;
-                originalShiftResponse.ClockOutTime = updatedShift.ClockOutTime;
-            }
+
+            originalShiftResponse.EmployeeId = updatedShift.EmployeeId;
+            originalShiftResponse.ClockInTime = updatedShift.ClockInTime;
+            originalShiftResponse.ClockOutTime = updatedShift.ClockOutTime;
 
             return Result.Success();
         }

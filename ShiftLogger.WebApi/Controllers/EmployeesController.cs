@@ -17,8 +17,8 @@ public class EmployeesController : ControllerBase
         CreateEmployeeCommand command,
         [FromServices] CreateEmployeeHandler handler)
     {
-        await handler.HandleAsync(command);
-        return Ok();
+        var result = await handler.HandleAsync(command);
+        return Ok(result);
     }
 
     [HttpGet]
@@ -36,8 +36,8 @@ public class EmployeesController : ControllerBase
         [FromServices] UpdateEmployeeHandler handler)
     {
         command = command with { Id = id };
-        await handler.HandleAsync(command);
-        return Ok();
+        var result = await handler.HandleAsync(command);
+        return Ok(result);
     }
 
     [HttpDelete("{id}")]
@@ -47,8 +47,8 @@ public class EmployeesController : ControllerBase
         [FromServices] DeleteEmployeeHandler handler)
     {
         command = command with { Id = id };
-        await handler.HandleAsync(command);
-        return Ok();
+        var result = await handler.HandleAsync(command);
+        return Ok(result);
     }
 
 }
