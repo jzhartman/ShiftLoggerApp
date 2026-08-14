@@ -26,27 +26,28 @@ public class EmployeesController : ControllerBase
         [FromServices] GetAllEmpoyeesHandler handler)
     {
         var result = await handler.HandleAsync();
-
         return Ok(result);
     }
 
-    [HttpPut("{command.Id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult> UpdateEmployeeAsync(
+        int id,
         UpdateEmployeeCommand command,
         [FromServices] UpdateEmployeeHandler handler)
     {
+        command = command with { Id = id };
         await handler.HandleAsync(command);
-
         return Ok();
     }
 
-    [HttpDelete("{command.Id}")]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteEmployeeAsync(
+        int id,
         DeleteEmployeeCommand command,
         [FromServices] DeleteEmployeeHandler handler)
     {
+        command = command with { Id = id };
         await handler.HandleAsync(command);
-
         return Ok();
     }
 
