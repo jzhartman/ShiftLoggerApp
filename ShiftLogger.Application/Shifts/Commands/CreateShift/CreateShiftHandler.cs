@@ -29,7 +29,7 @@ public class CreateShiftHandler
         if (!employeeExistsResult.Value)
             return Result.Failure(employeeExistsResult.Errors);
 
-        if (command.ClockInTime > command.ClockOutTime)
+        if (command.ClockInTime >= command.ClockOutTime)
             return Result.Failure(Errors.ClockInTimePrecedesClockOutTime);
 
         if ((await _shiftsRepository.OverlapsExistingShift(newShift)).Value)
