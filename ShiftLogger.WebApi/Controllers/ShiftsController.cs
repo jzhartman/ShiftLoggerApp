@@ -18,36 +18,38 @@ public class ShiftsController : ControllerBase
         CreateShiftCommand command,
         [FromServices] CreateShiftHandler handler)
     {
-        await handler.HandleAsync(command);
-
-        return Ok();
-    }
-
-    [HttpGet("{employeeId}")]
-    public async Task<ActionResult<ShiftLoggerApiResponse<List<Shift>>>> GetShiftsByEmployeeIdAsync(
-        int employeeId,
-        [FromServices] GetShiftsByEmployeeIdHandler handler)
-    {
-        var result = await handler.HandleAsync(new GetShiftsQuery(employeeId));
+        var result = await handler.HandleAsync(command);
         return Ok(result);
     }
 
-    [HttpPut("{command.Id}")]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ShiftLoggerApiResponse<List<Shift>>>> GetShiftsByEmployeeIdAsync(
+        int id,
+        [FromServices] GetShiftsByEmployeeIdHandler handler)
+    {
+        var result = await handler.HandleAsync(new GetShiftsQuery(id));
+        return Ok(result);
+    }
+
+    [HttpPut("{id}")]
     public async Task<ActionResult> UpdateShiftAsync(
+        int id,
         UpdateShiftCommand command,
         [FromServices] UpdateShiftHandler handler)
     {
-        await handler.HandleAsync(command);
-
-        return Ok();
+        command = command with { Id = id };
+        var result = await handler.HandleAsync(command);
+        return Ok(result);
     }
 
-    [HttpDelete("{command.Id}")]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteShiftAsync(
+        int id,
         DeleteShiftCommand command,
         [FromServices] DeleteShiftHandler handler)
     {
-        await handler.HandleAsync(command);
-        return Ok();
+        command = command with { Id = id };
+        var result = await handler.HandleAsync(command);
+        return Ok(result);
     }
 }
