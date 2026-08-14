@@ -49,7 +49,7 @@ public class EmployeeRepository : IEmployeeRepository
         {
             var response = await _context.Employees.FindAsync(id);
 
-            return (response is null) ? Result<bool>.Success(true) : Result<bool>.Failure(Errors.EmployeeNotFound);
+            return (response is null) ? Result<bool>.Failure(Errors.EmployeeNotFound) : Result<bool>.Success(true);
         }
         catch (Exception ex)
         {
