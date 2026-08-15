@@ -13,11 +13,11 @@ public static class Errors
     public static readonly Error ShiftIdNotFound = new("SR-404", "The requested shift could not be found.");
     public static readonly Error ShiftsNotFoundForEmployeeId = new("SR-404", "No shifts found for the specified employee.");
     public static readonly Error ShiftAlreadyExists = new("SR-409", "A shift with the requested data already exists.");
-
+    public static readonly Error ShiftCountNull = new("SR-404", "The shift count query returned null for the specified employee.");
 
     public static readonly Error EmployeeNotFound = new("ER-404", "The requested employee could not be found.");
-
-
+    public static readonly Error EmployeeAlreadyExists = new("ER-409", "Any employee with that name already exists.");
+    public static readonly Error EmployeeNameIsBlank = new("ER-409", "Employee first and last names cannot be blank.");
 
 
     public static readonly Error ClockInTimePrecedesClockOutTime = new("SH-409", "The Clock In time cannot be on or after the Clock Out time.");
