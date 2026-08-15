@@ -18,7 +18,7 @@ public class GetShiftsByEmployeeIdHandler
 
     public async Task<Result<List<ShiftDto>?>> HandleAsync(GetShiftsQuery request)
     {
-        var employeeExistsResult = await _employeeRepository.EmployeeExistsById(request.Id);
+        var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(request.Id);
         if (!employeeExistsResult.Value)
             return Result<List<ShiftDto>?>.Failure(employeeExistsResult.Errors);
 

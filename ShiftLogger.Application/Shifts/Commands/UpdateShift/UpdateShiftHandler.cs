@@ -26,17 +26,17 @@ public class UpdateShiftHandler
             ClockOutTime = shift.ClockOutTime
         };
 
-        var employeeExistsResult = await _employeeRepository.EmployeeExistsById(updatedShift.EmployeeId);
+        var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(updatedShift.EmployeeId);
         if (!employeeExistsResult.Value)
             return Result.Failure(employeeExistsResult.Errors);
 
-        if (!(await _shiftsRepository.ShiftExistsById(updatedShift.Id)).Value)
+        if (!(await _shiftsRepository.ShiftExistsByIdAsync(updatedShift.Id)).Value)
             return Result.Failure(Errors.ShiftIdNotFound);
 
         if (updatedShift.ClockInTime >= updatedShift.ClockOutTime)
             return Result.Failure(Errors.ClockInTimePrecedesClockOutTime);
 
-        if ((await _shiftsRepository.OverlapsExistingShiftsExcludingCurrent(updatedShift)).Value)
+        if ((await _shiftsRepository.OverlapsExistingShiftsExcludingCurrentAsync(updatedShift)).Value)
             return Result.Failure(Errors.NewShiftOverlapsExistingShift);
 
         var updateResult = await _shiftsRepository.UpdateShiftByIdAsync(updatedShift);

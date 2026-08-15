@@ -25,14 +25,14 @@ public class CreateShiftHandler
             ClockOutTime = command.ClockOutTime
         };
 
-        var employeeExistsResult = await _employeeRepository.EmployeeExistsById(newShift.EmployeeId);
+        var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(newShift.EmployeeId);
         if (!employeeExistsResult.Value)
             return Result.Failure(employeeExistsResult.Errors);
 
         if (command.ClockInTime >= command.ClockOutTime)
             return Result.Failure(Errors.ClockInTimePrecedesClockOutTime);
 
-        if ((await _shiftsRepository.OverlapsExistingShift(newShift)).Value)
+        if ((await _shiftsRepository.OverlapsExistingShiftAsync(newShift)).Value)
             return Result.Failure(Errors.NewShiftOverlapsExistingShift);
 
 

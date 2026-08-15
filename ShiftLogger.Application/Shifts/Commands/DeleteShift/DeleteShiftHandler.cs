@@ -24,13 +24,13 @@ public class DeleteShiftHandler
             ClockOutTime = command.ClockOutTime
         };
 
-        var result = await _shiftsRepository.ShiftExistsById(shiftToDelete.Id);
+        var shiftExistsResult = await _shiftsRepository.ShiftExistsByIdAsync(shiftToDelete.Id);
 
-        if (result is null || result.Value == false)
+        if (shiftExistsResult is null || shiftExistsResult.Value == false)
             return Result.Failure(Errors.ShiftIdNotFound);
 
-        if (result.IsFailure)
-            return result;
+        if (shiftExistsResult.IsFailure)
+            return shiftExistsResult;
 
         return await _shiftsRepository.DeleteShiftAsync(shiftToDelete);
     }

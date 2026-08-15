@@ -32,7 +32,7 @@ public class CreateShiftHandlerTests
         var employeeCheckResult = Result<bool>.Failure();
 
         _employeeRepoMock
-            .Setup(repo => repo.EmployeeExistsById(command.EmployeeId))
+            .Setup(repo => repo.EmployeeExistsByIdAsync(command.EmployeeId))
             .ReturnsAsync(employeeCheckResult);
 
         // Act
@@ -40,7 +40,7 @@ public class CreateShiftHandlerTests
 
         // Assert
         Assert.True(result.IsFailure);
-        _shiftRepoMock.Verify(repo => repo.OverlapsExistingShift(It.IsAny<Shift>()), Times.Never);
+        _shiftRepoMock.Verify(repo => repo.OverlapsExistingShiftAsync(It.IsAny<Shift>()), Times.Never);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class CreateShiftHandlerTests
         );
 
         _employeeRepoMock
-            .Setup(repo => repo.EmployeeExistsById(command.EmployeeId))
+            .Setup(repo => repo.EmployeeExistsByIdAsync(command.EmployeeId))
             .ReturnsAsync(Result<bool>.Success(true));
 
         // Act
@@ -63,7 +63,7 @@ public class CreateShiftHandlerTests
         // Assert
         Assert.True(result.IsFailure);
         Assert.Equal(Errors.ClockInTimePrecedesClockOutTime, result.Errors[0]);
-        _shiftRepoMock.Verify(repo => repo.OverlapsExistingShift(It.IsAny<Shift>()), Times.Never);
+        _shiftRepoMock.Verify(repo => repo.OverlapsExistingShiftAsync(It.IsAny<Shift>()), Times.Never);
 
     }
 
@@ -78,12 +78,12 @@ public class CreateShiftHandlerTests
         );
 
         _employeeRepoMock
-            .Setup(repo => repo.EmployeeExistsById(command.EmployeeId))
+            .Setup(repo => repo.EmployeeExistsByIdAsync(command.EmployeeId))
             .ReturnsAsync(Result<bool>.Success(true));
 
         // Simulate an overlap match
         _shiftRepoMock
-            .Setup(repo => repo.OverlapsExistingShift(It.IsAny<Shift>()))
+            .Setup(repo => repo.OverlapsExistingShiftAsync(It.IsAny<Shift>()))
             .ReturnsAsync(Result<bool>.Success(true));
 
         // Act
@@ -106,11 +106,11 @@ public class CreateShiftHandlerTests
         );
 
         _employeeRepoMock
-            .Setup(repo => repo.EmployeeExistsById(command.EmployeeId))
+            .Setup(repo => repo.EmployeeExistsByIdAsync(command.EmployeeId))
             .ReturnsAsync(Result<bool>.Success(true));
 
         _shiftRepoMock
-            .Setup(repo => repo.OverlapsExistingShift(It.IsAny<Shift>()))
+            .Setup(repo => repo.OverlapsExistingShiftAsync(It.IsAny<Shift>()))
             .ReturnsAsync(Result<bool>.Success(false));
 
         _shiftRepoMock
