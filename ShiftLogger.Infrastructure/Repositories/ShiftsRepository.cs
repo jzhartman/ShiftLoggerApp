@@ -85,13 +85,27 @@ public class ShiftsRepository : IShiftsRepository
         }
     }
 
-    public async Task<Result> DeleteAllShiftsByEmployeeId(int employeeId)
+    public async Task<Result<int>> ShiftCountByEmployeeIdAsync(int employeeId)
     {
         try
         {
-            var result = await _context.Shifts.Where(s => s.EmployeeId == employeeId).ExecuteDeleteAsync();
+            var response = await _context.Shifts.CountAsync(s => s.EmployeeId == employeeId);
 
-            return (result > 0) ? Result.Success() : Result.Failure(Errors.ShiftsNotFoundForEmployeeId);
+            return Result<int>.Success(response) ?? Result<int>.Failure(Errors.ShiftCountNull);
+        }
+        catch (Exception ex)
+        {
+            return Result<int>.Failure(new Error("DatabaseError", ex.Message));
+        }
+    }
+
+    public async Task<Result> DeleteAllShiftsByEmployeeIdAsync(int employeeId)
+    {
+        try
+        {
+            var response = await _context.Shifts.Where(s => s.EmployeeId == employeeId).ExecuteDeleteAsync();
+
+            return (response > 0) ? Result.Success() : Result.Failure(Errors.ShiftsNotFoundForEmployeeId);
         }
         catch (Exception ex)
         {
@@ -113,7 +127,7 @@ public class ShiftsRepository : IShiftsRepository
         }
     }
 
-    public async Task<Result<bool>> ShiftExistsById(int id)
+    public async Task<Result<bool>> ShiftExistsByIdAsync(int id)
     {
         try
         {
@@ -129,7 +143,7 @@ public class ShiftsRepository : IShiftsRepository
         }
     }
 
-    public async Task<Result<bool>> OverlapsExistingShift(Shift shift)
+    public async Task<Result<bool>> OverlapsExistingShiftAsync(Shift shift)
     {
         try
         {
@@ -146,7 +160,7 @@ public class ShiftsRepository : IShiftsRepository
             return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-    public async Task<Result<bool>> OverlapsExistingShiftsExcludingCurrent(Shift shift)
+    public async Task<Result<bool>> OverlapsExistingShiftsExcludingCurrentAsync(Shift shift)
     {
         try
         {
