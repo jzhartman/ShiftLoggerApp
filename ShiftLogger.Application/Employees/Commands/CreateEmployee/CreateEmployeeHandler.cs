@@ -1,4 +1,6 @@
 ﻿using ShiftLogger.Domain.Models;
+using ShiftLogger.Domain.Validation;
+using ShiftLogger.Domain.Validation.Errors;
 using ShiftLogger.Infrastructure.Repositories;
 
 namespace ShiftLogger.Application.Employees.Commands.CreateEmployee;
@@ -12,10 +14,26 @@ public class CreateEmployeeHandler
         _employeeRepository = employeeRepository;
     }
 
-    public async Task HandleAsync(CreateEmployeeCommand command)
+    public async Task<Result> HandleAsync(CreateEmployeeCommand command)
     {
-        await _employeeRepository.CreateEmployeeAsync(new Employee { FirstName = command.FirstName, LastName = command.LastName });
+        var newEmployee = new Employee
+        {
+            FirstName = command.FirstName,
+            LastName = command.LastName
+        };
 
-        await _employeeRepository.SaveChangesAsync();
+        if (string.IsNullOrWhiteSpace(command.FirstName) || string.IsNullOrWhiteSpace(command.LastName))
+            return Result.Failure(Errors.EmployeeNameIsBlank);
+
+        var employeeExistsResult = await _employeeRepository.EmployeeExistsByFullNameAsync(newEmployee);
+        if (employeeExistsResult.IsFailure)
+            return employeeExistsResult;
+
+        var createResult = await _employeeRepository.CreateEmployeeAsync(newEmployee);
+
+        if (createResult.IsFailure)
+            return createResult;
+
+        return await _employeeRepository.SaveChangesAsync();
     }
 }

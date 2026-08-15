@@ -1,4 +1,5 @@
 ﻿using ShiftLogger.Domain.Models;
+using ShiftLogger.Domain.Validation;
 using ShiftLogger.Infrastructure.Repositories;
 
 namespace ShiftLogger.Application.Employees.Commands.DeleteEmployee;
@@ -14,17 +15,30 @@ public class DeleteEmployeeHandler
         _shiftRepository = shiftRepository;
     }
 
-    public async Task HandleAsync(DeleteEmployeeCommand command)
+    public async Task<Result> HandleAsync(DeleteEmployeeCommand command)
     {
-        await _shiftRepository.DeleteAllShiftsByEmployeeId(command.Id);
-
-        await _empoyeeRepository.DeleteEmployeeAsync(new Employee
+        var employeeToDelete = new Employee
         {
             Id = command.Id,
             FirstName = command.FirstName,
             LastName = command.LastName
-        });
+        };
 
-        await _empoyeeRepository.SaveChangesAsync();
+        var employeeExistsResult = await _empoyeeRepository.EmployeeExistsByIdAsync(employeeToDelete.Id);
+        if (employeeExistsResult.IsFailure)
+            return Result.Failure(employeeExistsResult.Errors);
+
+        var shiftCountResult = await _shiftRepository.ShiftCountByEmployeeIdAsync(employeeToDelete.Id);
+        if (shiftCountResult.IsFailure)
+            return Result.Failure(shiftCountResult.Errors);
+
+        if (shiftCountResult.Value > 0)
+        {
+            var deleteShiftsResult = await _shiftRepository.DeleteAllShiftsByEmployeeIdAsync(command.Id);
+            if (!deleteShiftsResult.IsFailure)
+                return Result.Failure(deleteShiftsResult.Errors);
+        }
+
+        return await _empoyeeRepository.DeleteEmployeeAsync(employeeToDelete);
     }
 }
