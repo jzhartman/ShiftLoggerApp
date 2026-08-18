@@ -29,20 +29,27 @@ public class UpdateShiftHandler
         var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(updatedShift.EmployeeId);
         if (!employeeExistsResult.Value)
             return Result.Failure(Errors.EmployeeNotFound);
+        if (employeeExistsResult.IsFailure)
+            return Result.Failure(employeeExistsResult.Errors);
 
-        if (!(await _shiftsRepository.ShiftExistsByIdAsync(updatedShift.Id)).Value)
+        var shiftExistsResult = await _shiftsRepository.ShiftExistsByIdAsync(updatedShift.Id);
+        if (!shiftExistsResult.Value)
             return Result.Failure(Errors.ShiftIdNotFound);
+        if (shiftExistsResult.IsFailure)
+            return Result.Failure(shiftExistsResult.Errors);
 
         if (updatedShift.ClockInTime >= updatedShift.ClockOutTime)
             return Result.Failure(Errors.ClockInTimePrecedesClockOutTime);
 
-        if ((await _shiftsRepository.OverlapsExistingShiftsExcludingCurrentAsync(updatedShift)).Value)
+        var overlapsResult = await _shiftsRepository.OverlapsExistingShiftsExcludingCurrentAsync(updatedShift);
+        if (overlapsResult.Value)
             return Result.Failure(Errors.NewShiftOverlapsExistingShift);
+        if (overlapsResult.IsFailure)
+            return Result.Failure(overlapsResult.Errors);
 
         var updateResult = await _shiftsRepository.UpdateShiftByIdAsync(updatedShift);
-
         if (updateResult.IsFailure)
-            return updateResult;
+            return Result.Failure(updateResult.Errors);
 
         return await _shiftsRepository.SaveChangesAsync();
     }

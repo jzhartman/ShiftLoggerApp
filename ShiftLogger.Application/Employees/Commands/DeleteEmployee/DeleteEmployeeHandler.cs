@@ -28,6 +28,8 @@ public class DeleteEmployeeHandler
         var employeeExistsResult = await _empoyeeRepository.EmployeeExistsByIdAsync(employeeToDelete.Id);
         if (!employeeExistsResult.Value)
             return Result.Failure(Errors.EmployeeNotFound);
+        if (employeeExistsResult.IsFailure)
+            return Result.Failure(employeeExistsResult.Errors);
 
         var shiftCountResult = await _shiftRepository.ShiftCountByEmployeeIdAsync(employeeToDelete.Id);
         if (shiftCountResult.IsFailure)

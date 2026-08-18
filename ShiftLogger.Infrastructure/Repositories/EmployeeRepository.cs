@@ -33,9 +33,6 @@ public class EmployeeRepository : IEmployeeRepository
         {
             var response = await _context.Employees.ToListAsync();
 
-            if (response is null || response.Count == 0)
-                response = new List<Employee>();
-
             return Result<List<Employee>>.Success(response);
         }
         catch (Exception ex)
@@ -43,7 +40,6 @@ public class EmployeeRepository : IEmployeeRepository
             return Result<List<Employee>>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-    // ToDo: Change update method to not use this style
     public async Task<Result> UpdateEmployeeAsync(Employee updatedEmployee)
     {
         try
@@ -51,14 +47,12 @@ public class EmployeeRepository : IEmployeeRepository
             var originalEmployeeResponse = await _context.Employees.FindAsync(updatedEmployee.Id);
 
             if (originalEmployeeResponse is null)
-                return Result.Failure(Errors.EmployeeNotFound); // ToDo: Review this error code
-
+                return Result.Failure(Errors.EmployeeNotFound);
 
             originalEmployeeResponse.FirstName = updatedEmployee.FirstName;
             originalEmployeeResponse.LastName = updatedEmployee.LastName;
 
             return Result.Success();
-
         }
         catch (Exception ex)
         {

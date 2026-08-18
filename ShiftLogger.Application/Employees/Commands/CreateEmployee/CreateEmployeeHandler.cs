@@ -28,11 +28,12 @@ public class CreateEmployeeHandler
         var employeeExistsResult = await _employeeRepository.EmployeeExistsByFullNameAsync(newEmployee);
         if (employeeExistsResult.Value)
             return Result.Failure(Errors.EmployeeAlreadyExists);
+        if (employeeExistsResult.IsFailure)
+            return Result.Failure(employeeExistsResult.Errors);
 
         var createResult = await _employeeRepository.CreateEmployeeAsync(newEmployee);
-
         if (createResult.IsFailure)
-            return createResult;
+            return Result.Failure(createResult.Errors);
 
         return await _employeeRepository.SaveChangesAsync();
     }

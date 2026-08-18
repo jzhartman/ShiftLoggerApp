@@ -25,12 +25,13 @@ public class DeleteShiftHandler
         };
 
         var shiftExistsResult = await _shiftsRepository.ShiftExistsByIdAsync(shiftToDelete.Id);
-
-        if (shiftExistsResult is null || shiftExistsResult.Value == false)
+        if (!shiftExistsResult.Value)
             return Result.Failure(Errors.ShiftIdNotFound);
+        if (shiftExistsResult.IsFailure)
+            return Result.Failure(shiftExistsResult.Errors);
 
         if (shiftExistsResult.IsFailure)
-            return shiftExistsResult;
+            return Result.Failure(shiftExistsResult.Errors);
 
         return await _shiftsRepository.DeleteShiftAsync(shiftToDelete);
     }
