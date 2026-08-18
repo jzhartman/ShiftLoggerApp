@@ -1,5 +1,6 @@
 ﻿using ShiftLogger.Domain.Models;
 using ShiftLogger.Domain.Validation;
+using ShiftLogger.Domain.Validation.Errors;
 using ShiftLogger.Infrastructure.Repositories;
 
 namespace ShiftLogger.Application.Employees.Commands.DeleteEmployee;
@@ -25,8 +26,8 @@ public class DeleteEmployeeHandler
         };
 
         var employeeExistsResult = await _empoyeeRepository.EmployeeExistsByIdAsync(employeeToDelete.Id);
-        if (employeeExistsResult.IsFailure)
-            return Result.Failure(employeeExistsResult.Errors);
+        if (!employeeExistsResult.Value)
+            return Result.Failure(Errors.EmployeeNotFound);
 
         var shiftCountResult = await _shiftRepository.ShiftCountByEmployeeIdAsync(employeeToDelete.Id);
         if (shiftCountResult.IsFailure)

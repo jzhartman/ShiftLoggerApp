@@ -27,7 +27,7 @@ public class CreateShiftHandler
 
         var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(newShift.EmployeeId);
         if (!employeeExistsResult.Value)
-            return Result.Failure(employeeExistsResult.Errors);
+            return Result.Failure(Errors.EmployeeNotFound);
 
         if (command.ClockInTime >= command.ClockOutTime)
             return Result.Failure(Errors.ClockInTimePrecedesClockOutTime);

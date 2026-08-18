@@ -7,7 +7,7 @@ public interface IEmployeeRepository
 {
     Task<Result> CreateEmployeeAsync(Employee employee);
     Task<Result> DeleteEmployeeAsync(Employee employee);
-    Task<Result> EmployeeExistsByFullNameAsync(Employee employee);
+    Task<Result<bool>> EmployeeExistsByFullNameAsync(Employee employee);
     Task<Result<bool>> EmployeeExistsByIdAsync(int id);
     Task<Result<List<Employee>>> GetAllAsync();
     Task<Result> SaveChangesAsync();

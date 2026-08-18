@@ -1,6 +1,7 @@
 ﻿using ShiftLogger.Application.Shifts.Dtos;
 using ShiftLogger.Domain.Models;
 using ShiftLogger.Domain.Validation;
+using ShiftLogger.Domain.Validation.Errors;
 using ShiftLogger.Infrastructure.Repositories;
 
 namespace ShiftLogger.Application.Shifts.Requests.GetShiftsByEmployeeId;
@@ -20,10 +21,9 @@ public class GetShiftsByEmployeeIdHandler
     {
         var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(request.Id);
         if (!employeeExistsResult.Value)
-            return Result<List<ShiftDto>?>.Failure(employeeExistsResult.Errors);
+            return Result<List<ShiftDto>?>.Failure(Errors.EmployeeNotFound);
 
         var result = await _shiftsRepository.GetAllShiftsByUserIdAsync(request.Id);
-
         if (result.IsFailure)
             return Result<List<ShiftDto>?>.Failure(result.Errors);
 

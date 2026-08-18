@@ -28,7 +28,7 @@ public class UpdateShiftHandler
 
         var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(updatedShift.EmployeeId);
         if (!employeeExistsResult.Value)
-            return Result.Failure(employeeExistsResult.Errors);
+            return Result.Failure(Errors.EmployeeNotFound);
 
         if (!(await _shiftsRepository.ShiftExistsByIdAsync(updatedShift.Id)).Value)
             return Result.Failure(Errors.ShiftIdNotFound);

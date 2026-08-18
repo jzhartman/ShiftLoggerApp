@@ -93,13 +93,13 @@ public class EmployeeRepository : IEmployeeRepository
             return Result.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-    public async Task<Result<bool>> EmployeeExistsByIdAsync(int id) //ToDo: Could refactor this to return a basic result
+    public async Task<Result<bool>> EmployeeExistsByIdAsync(int id)
     {
         try
         {
             var response = await _context.Employees.AnyAsync(e => e.Id == id);
 
-            return response ? Result<bool>.Failure(Errors.EmployeeNotFound) : Result<bool>.Success(true);
+            return Result<bool>.Success(response);
         }
         catch (Exception ex)
         {
@@ -107,18 +107,18 @@ public class EmployeeRepository : IEmployeeRepository
         }
     }
 
-    public async Task<Result> EmployeeExistsByFullNameAsync(Employee employee)
+    public async Task<Result<bool>> EmployeeExistsByFullNameAsync(Employee employee)
     {
         try
         {
             var response = await _context.Employees.AnyAsync(e => e.FirstName == employee.FirstName &&
                                                                     e.LastName == employee.LastName);
 
-            return response ? Result.Failure(Errors.EmployeeAlreadyExists) : Result.Success();
+            return Result<bool>.Success(response);
         }
         catch (Exception ex)
         {
-            return Result.Failure(new Error("DatabaseError", ex.Message));
+            return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
 }

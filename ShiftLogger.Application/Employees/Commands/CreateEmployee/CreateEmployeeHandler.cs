@@ -26,8 +26,8 @@ public class CreateEmployeeHandler
             return Result.Failure(Errors.EmployeeNameIsBlank);
 
         var employeeExistsResult = await _employeeRepository.EmployeeExistsByFullNameAsync(newEmployee);
-        if (employeeExistsResult.IsFailure)
-            return employeeExistsResult;
+        if (employeeExistsResult.Value)
+            return Result.Failure(Errors.EmployeeAlreadyExists);
 
         var createResult = await _employeeRepository.CreateEmployeeAsync(newEmployee);
 

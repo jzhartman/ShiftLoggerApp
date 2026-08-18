@@ -7,6 +7,10 @@ public static class Errors
     public static readonly Error None = Error.None;
     public static readonly Error GenericNull = new("GenericNull", "Cannot be null");
 
+    public static readonly Error QueryReturnedNull = new("Q-404", "The attempted query returned null.");
+    public static readonly Error NoChangesToUpdatedData = new("SR-404", "Updated data was the same as the original data.");
+
+
     public static readonly Error NoSaveData = new("SR-409", "Saved failed because no changes were detected.");
     public static readonly Error SaveFailed = new("SR-500", "Save failed for unknown reason.");
 

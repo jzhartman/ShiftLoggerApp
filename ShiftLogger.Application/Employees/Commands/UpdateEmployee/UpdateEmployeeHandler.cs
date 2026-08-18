@@ -1,6 +1,7 @@
 ﻿using ShiftLogger.Application.Employees.Commands.DeleteEmployee;
 using ShiftLogger.Domain.Models;
 using ShiftLogger.Domain.Validation;
+using ShiftLogger.Domain.Validation.Errors;
 using ShiftLogger.Infrastructure.Repositories;
 
 namespace ShiftLogger.Application.Employees.Commands.UpdateEmployee;
@@ -25,9 +26,11 @@ public class UpdateEmployeeHandler
 
         var employeeExistsByIdResult = await _employeeRepository.EmployeeExistsByIdAsync(updatedEmployee.Id);
         if (!employeeExistsByIdResult.Value)
-            return Result.Failure(employeeExistsByIdResult.Errors);
+            return Result.Failure(Errors.EmployeeNotFound);
 
-
+        var employeeExistsByFullNameResult = await _employeeRepository.EmployeeExistsByFullNameAsync(updatedEmployee);
+        if (employeeExistsByFullNameResult.Value)
+            return Result.Failure(Errors.NoChangesToUpdatedData);
 
         await _employeeRepository.UpdateEmployeeAsync(updatedEmployee);
 
