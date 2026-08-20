@@ -10,6 +10,7 @@ public interface IEmployeeRepository
     Task<Result<bool>> EmployeeExistsByFullNameAsync(Employee employee);
     Task<Result<bool>> EmployeeExistsByIdAsync(int id);
     Task<Result<List<Employee>>> GetAllAsync();
+    Task<Result<Employee?>> GetEmployeeByIdAsync(int id);
     Task<Result> SaveChangesAsync();
     Task<Result> UpdateEmployeeAsync(Employee employee);
 }

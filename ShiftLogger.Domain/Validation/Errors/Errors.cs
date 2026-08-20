@@ -9,6 +9,7 @@ public static class Errors
 
     public static readonly Error QueryReturnedNull = new("Q-404", "The attempted query returned null.");
     public static readonly Error NoChangesToUpdatedData = new("SR-404", "Updated data was the same as the original data.");
+    public static readonly Error RecordMismatch = new("SR-409", "There is a mismatch between the data sent and the data returned.");
 
 
     public static readonly Error NoSaveData = new("SR-409", "Saved failed because no changes were detected.");

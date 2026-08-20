@@ -40,6 +40,20 @@ public class EmployeeRepository : IEmployeeRepository
             return Result<List<Employee>>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
+
+    public async Task<Result<Employee?>> GetEmployeeByIdAsync(int id)
+    {
+        try
+        {
+            var response = await _context.Employees.FindAsync(id);
+
+            return Result<Employee?>.Success(response);
+        }
+        catch (Exception ex)
+        {
+            return Result<Employee?>.Failure(new Error("DatabaseError", ex.Message));
+        }
+    }
     public async Task<Result> UpdateEmployeeAsync(Employee updatedEmployee)
     {
         try
