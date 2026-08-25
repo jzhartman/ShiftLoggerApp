@@ -1,9 +1,26 @@
-﻿namespace ShiftLogger.Console;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using ShiftLogger.Application;
+using ShiftLogger.Console.ApiClients.DependencyInjection;
+using ShiftLogger.Console.Configuration;
+
+namespace ShiftLogger.Console;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
-        //Console.WriteLine("Hello, World!");
+        var host = Host.CreateDefaultBuilder(args)
+            .ConfigureServices((context, services) =>
+            {
+                services.Configure<ApiSettings>(context.Configuration.GetSection("ApiSettings"));
+                services.AddConsoleUI();
+                services.AddApplication();
+                services.AddTransient<App>();
+            })
+            .Build();
+
+        await host.Services.GetRequiredService<App>().RunAsync();
     }
+
 }
