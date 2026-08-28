@@ -1,4 +1,5 @@
 ﻿using ShiftLogger.Application.Employees.Dtos;
+using ShiftLogger.Console.ApiClients.Responses;
 using ShiftLogger.Domain.Validation;
 using ShiftLogger.Domain.Validation.Errors;
 using System.Net.Http.Json;
@@ -17,20 +18,20 @@ internal class EmployeeApiClient : IEmployeeApiClient
 
     public async Task<Result<List<EmployeeDto>>> GetAllAsync()
     {
-        var apiResponse = await _http.GetAsync("employees");
+        var response = await _http.GetAsync("employees");
 
-        if (!apiResponse.IsSuccessStatusCode)
-            return Result<List<EmployeeDto>>.Failure(await ReadErrorsAsync(apiResponse));
+        if (!response.IsSuccessStatusCode)
+            return Result<List<EmployeeDto>>.Failure(await ReadErrorsAsync(response));
 
-        var result = await apiResponse.Content.ReadFromJsonAsync<Result<List<EmployeeDto>>>();
+        var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<List<EmployeeDto>>>();
 
-        if (result is null)
+        if (deserializedResponse is null)
             return Result<List<EmployeeDto>>.Failure(new Error("DeserializationError", "Could not parse API response."));
 
-        if (result.IsFailure)
-            return Result<List<EmployeeDto>>.Failure(result.Errors);
+        if (deserializedResponse.IsFailure)
+            return Result<List<EmployeeDto>>.Failure(deserializedResponse.Errors);
 
-        return Result<List<EmployeeDto>>.Success(result.Value ?? new List<EmployeeDto>());
+        return Result<List<EmployeeDto>>.Success(deserializedResponse.Value ?? new List<EmployeeDto>());
     }
 
     private async Task<List<Error>> ReadErrorsAsync(HttpResponseMessage response)
