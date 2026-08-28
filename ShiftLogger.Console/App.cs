@@ -1,28 +1,46 @@
-﻿using ShiftLogger.Console.ApiClients.Employees;
+﻿using ShiftLogger.Console.Presentation.Enums;
+using ShiftLogger.Console.Presentation.Services;
+using ShiftLogger.Console.Presentation.Views;
+using Spectre.Console;
 
 namespace ShiftLogger.Console;
 
 internal class App
 {
-    private readonly IEmployeeApiClient _employeeApiClient;
+    private readonly MainMenuView _mainMenu;
+    private readonly SelectEmployeeService _selectEmployeeService;
 
-    public App(IEmployeeApiClient employeeApiClient)
+    public App(MainMenuView mainMenu, SelectEmployeeService selectEmployeeService)
     {
-        _employeeApiClient = employeeApiClient;
+        _mainMenu = mainMenu;
+
+        _selectEmployeeService = selectEmployeeService;
     }
 
     public async Task RunAsync()
     {
-        System.Console.WriteLine("Running app...");
+        bool exitApp = false;
+        MainMenuItem[] menuItems = Enum.GetValues<MainMenuItem>();
 
-        var result = await _employeeApiClient.GetAllAsync();
-
-        foreach (var employee in result.Value)
+        while (exitApp == false)
         {
-            System.Console.WriteLine($"{employee.FirstName} {employee.LastName}");
+            AnsiConsole.Clear();
+            var selection = _mainMenu.Render(menuItems);
+
+            switch (selection)
+            {
+                case MainMenuItem.SelectEmployee:
+                    await _selectEmployeeService.RunAsync();
+                    break;
+                case MainMenuItem.CreateEmployee:
+                    break;
+                case MainMenuItem.Exit:
+                    exitApp = true;
+                    break;
+                default:
+                    AnsiConsole.WriteLine("ERROR: Unknown input for main menu selection!");
+                    break;
+            }
         }
-
-
-        System.Console.ReadLine();
     }
 }

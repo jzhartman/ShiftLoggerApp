@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.11" />
+    <PackageReference Include="Spectre.Console" Version="0.57.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,8 +26,6 @@
     <Folder Include="ApiClients\Http\" />
     <Folder Include="ApiClients\Shifts\" />
     <Folder Include="Presentation\Menus\" />
-    <Folder Include="Presentation\Services\" />
-    <Folder Include="Presentation\Views\" />
   </ItemGroup>
 
   <ItemGroup>

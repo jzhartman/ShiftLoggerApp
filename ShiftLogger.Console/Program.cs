@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using ShiftLogger.Application;
 using ShiftLogger.Console.ApiClients.DependencyInjection;
 using ShiftLogger.Console.Configuration;
+using ShiftLogger.Console.Presentation;
 
 namespace ShiftLogger.Console;
 
@@ -16,6 +17,7 @@ internal class Program
                 services.Configure<ApiSettings>(context.Configuration.GetSection("ApiSettings"));
                 services.AddConsoleUI();
                 services.AddApplication();
+                services.AddPresentation();
                 services.AddTransient<App>();
             })
             .Build();
