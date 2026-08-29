@@ -29,4 +29,6 @@ public static class Errors
     public static readonly Error ShiftOverlapReturnedNull = new("SH-404", "Shift overlap check returned null.");
     public static readonly Error NewShiftOverlapsExistingShift = new("SH-409", "This shift cannot overlap an existing shift.");
 
+    public static readonly Error DeserializationError = new("JSON-ERROR", "Could not parse API response.");
+
 }

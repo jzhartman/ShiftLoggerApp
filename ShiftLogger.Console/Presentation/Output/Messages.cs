@@ -1,0 +1,27 @@
+﻿using ShiftLogger.Domain.Validation.Errors;
+using Spectre.Console;
+
+namespace ShiftLogger.Console.Presentation.Output;
+
+internal static class Messages
+{
+    public static void OutputErrorMessage(IEnumerable<Error> errors)
+    {
+        foreach (var error in errors)
+        {
+            AnsiConsole.MarkupLine($"[red]ERROR:[/] {error.Code} -- {error.Description}");
+        }
+        PressAnyKeyToContinue();
+    }
+
+    public static void GoodbyeMessage()
+    {
+        AnsiConsole.WriteLine("Goodbye!");
+        PressAnyKeyToContinue();
+    }
+    public static void PressAnyKeyToContinue()
+    {
+        AnsiConsole.WriteLine("Press any key to continue");
+        AnsiConsole.Console.Input.ReadKey(false);
+    }
+}

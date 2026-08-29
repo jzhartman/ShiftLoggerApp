@@ -1,4 +1,5 @@
-﻿using ShiftLogger.Application.Employees.Dtos;
+﻿using ShiftLogger.Application.Employees.Commands.CreateEmployee;
+using ShiftLogger.Application.Employees.Dtos;
 using ShiftLogger.Console.ApiClients.Responses;
 using ShiftLogger.Domain.Validation;
 using ShiftLogger.Domain.Validation.Errors;
@@ -18,20 +19,53 @@ internal class EmployeeApiClient : IEmployeeApiClient
 
     public async Task<Result<List<EmployeeDto>>> GetAllAsync()
     {
-        var response = await _http.GetAsync("employees");
+        try
+        {
+            var response = await _http.GetAsync("employees");
 
-        if (!response.IsSuccessStatusCode)
-            return Result<List<EmployeeDto>>.Failure(await ReadErrorsAsync(response));
+            if (!response.IsSuccessStatusCode)
+                return Result<List<EmployeeDto>>.Failure(await ReadErrorsAsync(response));
 
-        var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<List<EmployeeDto>>>();
+            var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<List<EmployeeDto>>>();
 
-        if (deserializedResponse is null)
-            return Result<List<EmployeeDto>>.Failure(new Error("DeserializationError", "Could not parse API response."));
+            if (deserializedResponse is null)
+                return Result<List<EmployeeDto>>.Failure(Errors.DeserializationError);
 
-        if (deserializedResponse.IsFailure)
-            return Result<List<EmployeeDto>>.Failure(deserializedResponse.Errors);
+            if (deserializedResponse.IsFailure)
+                return Result<List<EmployeeDto>>.Failure(deserializedResponse.Errors);
 
-        return Result<List<EmployeeDto>>.Success(deserializedResponse.Value ?? new List<EmployeeDto>());
+            return Result<List<EmployeeDto>>.Success(deserializedResponse.Value ?? new List<EmployeeDto>());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EmployeeDto>>.Failure(new Error("ApiError", ex.Message));
+        }
+    }
+
+    public async Task<Result> Create(CreateEmployeeCommand command)
+    {
+        try
+        {
+            var response = await _http.PostAsJsonAsync("employees", command);
+
+            if (!response.IsSuccessStatusCode)
+                return Result.Failure(await ReadErrorsAsync(response));
+
+            var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+
+            if (deserializedResponse is null)
+                return Result.Failure(Errors.DeserializationError);
+
+            if (deserializedResponse.IsFailure)
+                return Result.Failure(deserializedResponse.Errors);
+
+            return Result.Success();
+
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EmployeeDto>>.Failure(new Error("ApiError", ex.Message));
+        }
     }
 
     private async Task<List<Error>> ReadErrorsAsync(HttpResponseMessage response)

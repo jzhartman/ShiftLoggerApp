@@ -1,7 +1,7 @@
 ﻿using ShiftLogger.Console.Presentation.Enums;
 using Spectre.Console;
 
-namespace ShiftLogger.Console.Presentation.Views;
+namespace ShiftLogger.Console.Presentation.Views.Menus;
 
 internal class EmployeeMenuView
 {
@@ -17,7 +17,8 @@ internal class EmployeeMenuView
                     EmployeeMenuItem.ViewShifts => "View Previous Shifts",
                     EmployeeMenuItem.UpdateEmployee => "Update Employee Name",
                     EmployeeMenuItem.DeleteEmployee => "Delete Employee",
-                    EmployeeMenuItem.Return => "Return to Main Menu",
+                    EmployeeMenuItem.ReturnToEmployeeSelection => "Return to Employee Selection",
+                    EmployeeMenuItem.ReturnToMainMenu => "Return to Main Menu",
                     _ => m.ToString()
                 })
                 .AddChoices(menuItems));

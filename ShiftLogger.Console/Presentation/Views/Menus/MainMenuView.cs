@@ -1,7 +1,7 @@
 ﻿using ShiftLogger.Console.Presentation.Enums;
 using Spectre.Console;
 
-namespace ShiftLogger.Console.Presentation.Views;
+namespace ShiftLogger.Console.Presentation.Views.Menus;
 
 internal class MainMenuView
 {

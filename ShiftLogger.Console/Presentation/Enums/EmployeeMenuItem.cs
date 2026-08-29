@@ -6,5 +6,6 @@ internal enum EmployeeMenuItem
     ViewShifts,
     UpdateEmployee,
     DeleteEmployee,
-    Return
+    ReturnToEmployeeSelection,
+    ReturnToMainMenu
 }
