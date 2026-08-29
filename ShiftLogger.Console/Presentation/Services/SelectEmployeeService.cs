@@ -75,7 +75,7 @@ internal class SelectEmployeeService
                             await _updateEmployeeService.RunAsync(employeeSelection);
                             break;
                         case EmployeeMenuItem.DeleteEmployee:
-                            await _deleteEmployeeService.RunAsync();
+                            await _deleteEmployeeService.RunAsync(employeeSelection);
                             break;
                         case EmployeeMenuItem.ReturnToEmployeeSelection:
                             returnToEmployeeSelection = true;

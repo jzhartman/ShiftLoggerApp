@@ -8,6 +8,7 @@ namespace ShiftLogger.Console.ApiClients.Employees;
 internal interface IEmployeeApiClient
 {
     Task<Result> CreateAsync(CreateEmployeeCommand command);
+    Task<Result> DeleteAsync(DeleteEmployeeCommand command);
     Task<Result<List<EmployeeDto>>> GetAllAsync();
     Task<Result> UpdateAsync(UpdateEmployeeCommand command);
 }
