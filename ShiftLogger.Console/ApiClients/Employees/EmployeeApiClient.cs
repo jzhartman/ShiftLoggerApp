@@ -1,4 +1,5 @@
 ﻿using ShiftLogger.Application.Employees.Commands.CreateEmployee;
+using ShiftLogger.Application.Employees.Commands.DeleteEmployee;
 using ShiftLogger.Application.Employees.Dtos;
 using ShiftLogger.Console.ApiClients.Responses;
 using ShiftLogger.Domain.Validation;
@@ -42,11 +43,36 @@ internal class EmployeeApiClient : IEmployeeApiClient
         }
     }
 
-    public async Task<Result> Create(CreateEmployeeCommand command)
+    public async Task<Result> CreateAsync(CreateEmployeeCommand command)
     {
         try
         {
             var response = await _http.PostAsJsonAsync("employees", command);
+
+            if (!response.IsSuccessStatusCode)
+                return Result.Failure(await ReadErrorsAsync(response));
+
+            var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+
+            if (deserializedResponse is null)
+                return Result.Failure(Errors.DeserializationError);
+
+            if (deserializedResponse.IsFailure)
+                return Result.Failure(deserializedResponse.Errors);
+
+            return Result.Success();
+
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EmployeeDto>>.Failure(new Error("ApiError", ex.Message));
+        }
+    }
+    public async Task<Result> UpdateAsync(UpdateEmployeeCommand command)
+    {
+        try
+        {
+            var response = await _http.PutAsJsonAsync($"employees/{command.Id}", command);
 
             if (!response.IsSuccessStatusCode)
                 return Result.Failure(await ReadErrorsAsync(response));

@@ -26,8 +26,13 @@ internal class CreateEmployeeService
 
         var command = new CreateEmployeeCommand(firstName, lastName);
 
-        var result = await _employeeApiClient.Create(command);
+        var result = await _employeeApiClient.CreateAsync(command);
 
+        if (result.IsSuccess)
+            AnsiConsole.WriteLine($"Successfully added {command.FirstName} {command.LastName}");
+
+        if (result.IsFailure)
+            Messages.OutputErrorMessage(result.Errors);
 
         Messages.PressAnyKeyToContinue();
 

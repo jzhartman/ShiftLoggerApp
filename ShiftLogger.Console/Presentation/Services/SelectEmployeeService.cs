@@ -72,7 +72,7 @@ internal class SelectEmployeeService
                             await _viewShiftsService.RunAsync();
                             break;
                         case EmployeeMenuItem.UpdateEmployee:
-                            await _updateEmployeeService.RunAsync();
+                            await _updateEmployeeService.RunAsync(employeeSelection);
                             break;
                         case EmployeeMenuItem.DeleteEmployee:
                             await _deleteEmployeeService.RunAsync();
