@@ -16,23 +16,39 @@ internal class CreateEmployeeService
 
     public async Task RunAsync()
     {
-        AnsiConsole.WriteLine("Creating employee....");
+        AnsiConsole.Clear();
+        AnsiConsole.Write("Create New Employee");
+        Messages.PrintBlankLines(2);
 
-        AnsiConsole.Write("First  Name: ");
-        var firstName = System.Console.ReadLine();
+        bool returnToMainMenu = false;
 
-        AnsiConsole.Write("Last  Name: ");
-        var lastName = System.Console.ReadLine();
+        while (returnToMainMenu == false)
+        {
+            bool employeeValid = false;
 
-        var command = new CreateEmployeeCommand(firstName, lastName);
+            var firstName = UserInput.GetNameFromUser("Enter first name of employee:");
+            var lastName = UserInput.GetNameFromUser("Enter last name of employee:");
 
-        var result = await _employeeApiClient.CreateAsync(command);
+            var command = new CreateEmployeeCommand(firstName, lastName);
 
-        if (result.IsSuccess)
-            AnsiConsole.WriteLine($"Successfully added {command.FirstName} {command.LastName}");
+            var result = await _employeeApiClient.CreateAsync(command);
 
-        if (result.IsFailure)
-            Messages.OutputErrorMessage(result.Errors);
+            if (result.IsSuccess)
+            {
+                AnsiConsole.WriteLine($"Successfully added {command.FirstName} {command.LastName}");
+                employeeValid = true;
+                returnToMainMenu = true;
+            }
+
+            if (result.IsFailure)
+            {
+                employeeValid = false;
+                Messages.OutputErrorMessage(result.Errors);
+            }
+
+            if (employeeValid == false)
+                returnToMainMenu = (UserInput.GetRetryConfirmation("Retry entering name?")) ? false : true;
+        }
 
         Messages.PressAnyKeyToContinue();
 
