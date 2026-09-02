@@ -17,27 +17,35 @@ internal class UpdateEmployeeService
 
     public async Task<bool> RunAsync(EmployeeViewModel employee)
     {
-        AnsiConsole.WriteLine("Updating employee....");
+        AnsiConsole.Clear();
+        AnsiConsole.Write($"Updating Employee Record for {employee.FirstName} {employee.LastName}");
+        Messages.PrintBlankLines(2);
 
-        AnsiConsole.Write("First  Name: ");
-        var newFirstName = System.Console.ReadLine();
+        var newFirstName = UserInput.GetNameFromUser("Enter new first name: ");
+        var newLastName = UserInput.GetNameFromUser("Enter new last name: ");
 
-        AnsiConsole.Write("Last  Name: ");
-        var newLastName = System.Console.ReadLine();
+        var confirmUpdate = UserInput.GetConfirmation($"Confirm changing {employee.FirstName} {employee.LastName} to {newFirstName} {newLastName}?");
 
-        var command = new UpdateEmployeeCommand(employee.Id, newFirstName ?? "", newLastName ?? "");
-
-        var result = await _employeeApiClient.UpdateAsync(command);
-
-        if (result.IsSuccess)
+        if (confirmUpdate == true)
         {
-            AnsiConsole.WriteLine($"Successfully updated {employee.FirstName} {employee.LastName} to {newFirstName} {newLastName}");
-            Messages.PressAnyKeyToContinue();
-            return true;
-        }
+            var command = new UpdateEmployeeCommand(employee.Id, newFirstName, newLastName);
 
-        if (result.IsFailure)
-            Messages.OutputErrorMessage(result.Errors);
+            var result = await _employeeApiClient.UpdateAsync(command);
+
+            if (result.IsSuccess)
+            {
+                AnsiConsole.WriteLine($"Successfully updated {employee.FirstName} {employee.LastName} to {newFirstName} {newLastName}");
+                Messages.PressAnyKeyToContinue();
+                return true;
+            }
+
+            if (result.IsFailure)
+                Messages.OutputErrorMessage(result.Errors);
+        }
+        else
+        {
+            AnsiConsole.WriteLine("Update cancelled.");
+        }
 
         Messages.PressAnyKeyToContinue();
 

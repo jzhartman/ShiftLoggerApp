@@ -29,25 +29,30 @@ internal class CreateEmployeeService
             var firstName = UserInput.GetNameFromUser("Enter first name of employee:");
             var lastName = UserInput.GetNameFromUser("Enter last name of employee:");
 
-            var command = new CreateEmployeeCommand(firstName, lastName);
+            var confirmAdd = UserInput.GetConfirmation($"Confirm adding {firstName} {lastName}?");
 
-            var result = await _employeeApiClient.CreateAsync(command);
-
-            if (result.IsSuccess)
+            if (confirmAdd == true)
             {
-                AnsiConsole.WriteLine($"Successfully added {command.FirstName} {command.LastName}");
-                employeeValid = true;
-                returnToMainMenu = true;
-            }
+                var command = new CreateEmployeeCommand(firstName, lastName);
 
-            if (result.IsFailure)
-            {
-                employeeValid = false;
-                Messages.OutputErrorMessage(result.Errors);
+                var result = await _employeeApiClient.CreateAsync(command);
+
+                if (result.IsSuccess)
+                {
+                    AnsiConsole.WriteLine($"Successfully added {command.FirstName} {command.LastName}");
+                    employeeValid = true;
+                    returnToMainMenu = true;
+                }
+
+                if (result.IsFailure)
+                {
+                    employeeValid = false;
+                    Messages.OutputErrorMessage(result.Errors);
+                }
             }
 
             if (employeeValid == false)
-                returnToMainMenu = (UserInput.GetRetryConfirmation("Retry entering name?")) ? false : true;
+                returnToMainMenu = (UserInput.GetConfirmation("Retry entering name?")) ? false : true;
         }
 
         Messages.PressAnyKeyToContinue();

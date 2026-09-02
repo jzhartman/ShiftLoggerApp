@@ -36,7 +36,7 @@ internal static class UserInput
         return AnsiConsole.Prompt(datePrompt);
     }
 
-    internal static bool GetRetryConfirmation(string message)
+    internal static bool GetConfirmation(string message)
     {
         return AnsiConsole.Confirm(message);
     }
