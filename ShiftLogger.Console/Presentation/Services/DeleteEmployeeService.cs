@@ -1,6 +1,6 @@
 ﻿using ShiftLogger.Application.Employees.Commands.DeleteEmployee;
-using ShiftLogger.Application.Employees.Dtos;
 using ShiftLogger.Console.ApiClients.Employees;
+using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
 using Spectre.Console;
 
@@ -15,7 +15,7 @@ internal class DeleteEmployeeService
         _employeeApiClient = employeeApiClient;
     }
 
-    public async Task RunAsync(EmployeeDto employee)
+    public async Task RunAsync(EmployeeViewModel employee)
     {
         AnsiConsole.WriteLine("Deleting employee....");
 

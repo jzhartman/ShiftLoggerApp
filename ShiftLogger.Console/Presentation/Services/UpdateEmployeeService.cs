@@ -1,6 +1,6 @@
 ﻿using ShiftLogger.Application.Employees.Commands.DeleteEmployee;
-using ShiftLogger.Application.Employees.Dtos;
 using ShiftLogger.Console.ApiClients.Employees;
+using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
 using Spectre.Console;
 
@@ -15,7 +15,7 @@ internal class UpdateEmployeeService
         _employeeApiClient = employeeApiClient;
     }
 
-    public async Task RunAsync(EmployeeDto employee)
+    public async Task<bool> RunAsync(EmployeeViewModel employee)
     {
         AnsiConsole.WriteLine("Updating employee....");
 
@@ -25,18 +25,22 @@ internal class UpdateEmployeeService
         AnsiConsole.Write("Last  Name: ");
         var newLastName = System.Console.ReadLine();
 
-        var command = new UpdateEmployeeCommand(employee.Id, newFirstName, newLastName);
+        var command = new UpdateEmployeeCommand(employee.Id, newFirstName ?? "", newLastName ?? "");
 
         var result = await _employeeApiClient.UpdateAsync(command);
 
         if (result.IsSuccess)
-            AnsiConsole.WriteLine($"Successfully updated {employee.FirstName} {employee.LastName} to {command.FirstName} {command.LastName}");
+        {
+            AnsiConsole.WriteLine($"Successfully updated {employee.FirstName} {employee.LastName} to {newFirstName} {newLastName}");
+            Messages.PressAnyKeyToContinue();
+            return true;
+        }
 
         if (result.IsFailure)
             Messages.OutputErrorMessage(result.Errors);
 
         Messages.PressAnyKeyToContinue();
 
-        return;
+        return false;
     }
 }

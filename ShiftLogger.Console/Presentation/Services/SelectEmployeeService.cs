@@ -1,8 +1,11 @@
-﻿using ShiftLogger.Console.ApiClients.Employees;
+﻿using ShiftLogger.Application.Employees.Dtos;
+using ShiftLogger.Console.ApiClients.Employees;
 using ShiftLogger.Console.Presentation.Enums;
+using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
 using ShiftLogger.Console.Presentation.Views;
 using ShiftLogger.Console.Presentation.Views.Menus;
+using ShiftLogger.Domain.Validation;
 using Spectre.Console;
 
 namespace ShiftLogger.Console.Presentation.Services;
@@ -54,43 +57,67 @@ internal class SelectEmployeeService
             }
 
             if (result.IsSuccess)
-            {
-                var employeeSelection = _selectEmployeeView.Render(result.Value);
-
-                bool returnToEmployeeSelection = false;
-
-                while (returnToEmployeeSelection == false)
-                {
-                    var menuSelection = _employeeMenu.Render(Enum.GetValues<EmployeeMenuItem>().ToArray());
-
-                    switch (menuSelection)
-                    {
-                        case EmployeeMenuItem.LogShift:
-                            await _createShiftService.RunAsync();
-                            break;
-                        case EmployeeMenuItem.ViewShifts:
-                            await _viewShiftsService.RunAsync();
-                            break;
-                        case EmployeeMenuItem.UpdateEmployee:
-                            await _updateEmployeeService.RunAsync(employeeSelection);
-                            break;
-                        case EmployeeMenuItem.DeleteEmployee:
-                            await _deleteEmployeeService.RunAsync(employeeSelection);
-                            break;
-                        case EmployeeMenuItem.ReturnToEmployeeSelection:
-                            returnToEmployeeSelection = true;
-                            break;
-                        case EmployeeMenuItem.ReturnToMainMenu:
-                            returnToEmployeeSelection = true;
-                            returnToMainMenu = true;
-                            break;
-                        default:
-                            AnsiConsole.WriteLine("ERROR: Unknown input for main menu selection!");
-                            break;
-                    }
-                }
-            }
+                returnToMainMenu = await EmployeeMenuSelection(result);
         }
         return;
+    }
+
+
+    private async Task<bool> EmployeeMenuSelection(Result<List<EmployeeDto>> result)
+    {
+        var employeeSelection = _selectEmployeeView.Render(result.Value);
+
+        var employee = new EmployeeViewModel
+        {
+            Id = employeeSelection.Id,
+            FirstName = employeeSelection.FirstName,
+            LastName = employeeSelection.LastName
+        };
+
+        bool returnToEmployeeSelection = false;
+
+        while (returnToEmployeeSelection == false)
+        {
+            var menuSelection = _employeeMenu.Render(Enum.GetValues<EmployeeMenuItem>().ToArray());
+
+            switch (menuSelection)
+            {
+                case EmployeeMenuItem.LogShift:
+                    await _createShiftService.RunAsync(employee);
+                    break;
+                case EmployeeMenuItem.ViewShifts:
+                    await _viewShiftsService.RunAsync(employee);
+                    break;
+                case EmployeeMenuItem.UpdateEmployee:
+                    var employeeUpdated = await _updateEmployeeService.RunAsync(employee);
+                    if (employeeUpdated) await UpdateCurrentEmployee(employee);
+                    break;
+                case EmployeeMenuItem.DeleteEmployee:
+                    await _deleteEmployeeService.RunAsync(employee);
+                    returnToEmployeeSelection = true;
+                    break;
+                case EmployeeMenuItem.ReturnToEmployeeSelection:
+                    returnToEmployeeSelection = true;
+                    break;
+                case EmployeeMenuItem.ReturnToMainMenu:
+                    returnToEmployeeSelection = true;
+                    return true;
+                default:
+                    AnsiConsole.WriteLine("ERROR: Unknown input for main menu selection!");
+                    break;
+            }
+        }
+        return false;
+    }
+
+    private async Task UpdateCurrentEmployee(EmployeeViewModel employee)
+    {
+        var updatedEmployeeResponse = await _employeeApiClient.GetByIdAsync(employee.Id);
+
+        if (updatedEmployeeResponse.Value is not null)
+        {
+            employee.FirstName = updatedEmployeeResponse.Value.FirstName;
+            employee.LastName = updatedEmployeeResponse.Value.LastName;
+        }
     }
 }

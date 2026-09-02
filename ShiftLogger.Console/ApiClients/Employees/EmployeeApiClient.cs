@@ -22,7 +22,7 @@ internal class EmployeeApiClient : IEmployeeApiClient
     {
         try
         {
-            var response = await _http.GetAsync("employees");
+            var response = await _http.GetAsync("");
 
             if (!response.IsSuccessStatusCode)
                 return Result<List<EmployeeDto>>.Failure(await ReadErrorsAsync(response));
@@ -42,12 +42,36 @@ internal class EmployeeApiClient : IEmployeeApiClient
             return Result<List<EmployeeDto>>.Failure(new Error("ApiError", ex.Message));
         }
     }
+    public async Task<Result<EmployeeDto>> GetByIdAsync(int id)
+    {
+        try
+        {
+            var response = await _http.GetAsync($"{id}");
+
+            if (!response.IsSuccessStatusCode)
+                return Result<EmployeeDto>.Failure(await ReadErrorsAsync(response));
+
+            var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<EmployeeDto>>();
+
+            if (deserializedResponse is null || deserializedResponse.Value is null)
+                return Result<EmployeeDto>.Failure(Errors.DeserializationError);
+
+            if (deserializedResponse.IsFailure)
+                return Result<EmployeeDto>.Failure(deserializedResponse.Errors);
+
+            return Result<EmployeeDto>.Success(deserializedResponse.Value);
+        }
+        catch (Exception ex)
+        {
+            return Result<EmployeeDto>.Failure(new Error("ApiError", ex.Message));
+        }
+    }
 
     public async Task<Result> CreateAsync(CreateEmployeeCommand command)
     {
         try
         {
-            var response = await _http.PostAsJsonAsync("employees", command);
+            var response = await _http.PostAsJsonAsync("", command);
 
             if (!response.IsSuccessStatusCode)
                 return Result.Failure(await ReadErrorsAsync(response));
@@ -72,7 +96,7 @@ internal class EmployeeApiClient : IEmployeeApiClient
     {
         try
         {
-            var response = await _http.PutAsJsonAsync($"employees/{command.Id}", command);
+            var response = await _http.PutAsJsonAsync($"{command.Id}", command);
 
             if (!response.IsSuccessStatusCode)
                 return Result.Failure(await ReadErrorsAsync(response));
@@ -97,7 +121,7 @@ internal class EmployeeApiClient : IEmployeeApiClient
     {
         try
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"employees/{command.Id}")
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{command.Id}")
             {
                 Content = JsonContent.Create(command)
             };

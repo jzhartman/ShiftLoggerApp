@@ -4,6 +4,7 @@ using ShiftLogger.Application.Employees.Commands.CreateEmployee;
 using ShiftLogger.Application.Employees.Commands.DeleteEmployee;
 using ShiftLogger.Application.Employees.Commands.UpdateEmployee;
 using ShiftLogger.Application.Employees.Requests.GetAllEmployees;
+using ShiftLogger.Application.Employees.Requests.GetEmployeeById;
 using ShiftLogger.Domain.Models;
 
 namespace ShiftLogger.Api.Controllers;
@@ -26,6 +27,14 @@ public class EmployeesController : ControllerBase
         [FromServices] GetAllEmpoyeesHandler handler)
     {
         var result = await handler.HandleAsync();
+        return Ok(result);
+    }
+    [HttpGet("{id}")]
+    public async Task<ActionResult> GetEmployeeById(
+        int id,
+        [FromServices] GetEmployeeByIdHandler handler)
+    {
+        var result = await handler.HandleAsync(id);
         return Ok(result);
     }
 
