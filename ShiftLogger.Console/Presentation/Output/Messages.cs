@@ -24,4 +24,12 @@ internal static class Messages
         AnsiConsole.WriteLine("Press any key to continue");
         AnsiConsole.Console.Input.ReadKey(false);
     }
+
+    public static void PrintBlankLines(int lines)
+    {
+        for (int i = 0; i < lines; i++)
+        {
+            AnsiConsole.WriteLine();
+        }
+    }
 }
