@@ -16,20 +16,19 @@ internal class CreateEmployeeService
 
     public async Task RunAsync()
     {
-        AnsiConsole.Clear();
-        AnsiConsole.Write("Create New Employee");
-        Messages.PrintBlankLines(2);
-
         bool returnToMainMenu = false;
 
         while (returnToMainMenu == false)
         {
-            bool employeeValid = false;
+            AnsiConsole.Clear();
+            AnsiConsole.Write("Create New Employee");
+            Messages.PrintBlankLines(2);
 
-            var firstName = UserInput.GetNameFromUser("Enter first name of employee:");
-            var lastName = UserInput.GetNameFromUser("Enter last name of employee:");
+            var firstName = UserInput.GetNameFromUser("Enter [yellow]first name[/] of employee:");
+            var lastName = UserInput.GetNameFromUser("Enter [yellow]last name[/] of employee:");
 
-            var confirmAdd = UserInput.GetConfirmation($"Confirm adding {firstName} {lastName}?");
+            Messages.PrintBlankLines(1);
+            var confirmAdd = UserInput.GetConfirmation($"Confirm adding [green]{firstName} {lastName}[/]?");
 
             if (confirmAdd == true)
             {
@@ -39,24 +38,25 @@ internal class CreateEmployeeService
 
                 if (result.IsSuccess)
                 {
-                    AnsiConsole.WriteLine($"Successfully added {command.FirstName} {command.LastName}");
-                    employeeValid = true;
-                    returnToMainMenu = true;
+                    Messages.Success($"Added {command.FirstName} {command.LastName}");
                 }
 
                 if (result.IsFailure)
                 {
-                    employeeValid = false;
                     Messages.OutputErrorMessage(result.Errors);
                 }
             }
+            else
+            {
+                Messages.Cancelled($"Did not add [yellow]{firstName} {lastName}[/] to employee list");
+            }
 
-            if (employeeValid == false)
-                returnToMainMenu = (UserInput.GetConfirmation("Retry entering name?")) ? false : true;
+            Messages.PrintBlankLines(1);
+            returnToMainMenu = !(UserInput.GetConfirmation("Enter another employee?"));
         }
 
+        Messages.PrintBlankLines(1);
         Messages.PressAnyKeyToContinue();
-
         return;
     }
 }

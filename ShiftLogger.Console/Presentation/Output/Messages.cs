@@ -17,6 +17,10 @@ internal static class Messages
     {
         AnsiConsole.MarkupLine($"[green]SUCCESS:[/] {message}!");
     }
+    public static void Cancelled(string message)
+    {
+        AnsiConsole.MarkupLine($"[red]CANCELLED:[/] {message}!");
+    }
     public static void GoodbyeMessage()
     {
         AnsiConsole.WriteLine("Goodbye!");

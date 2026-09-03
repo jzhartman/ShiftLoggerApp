@@ -46,10 +46,14 @@ internal class CreateShiftService
 
                 if (result.IsFailure)
                     Messages.OutputErrorMessage(result.Errors);
-
-                Messages.PrintBlankLines(2);
-                enterShift = UserInput.GetConfirmation("Enter another shift?");
             }
+            else
+            {
+                Messages.Cancelled($"Did not add shift to employee log");
+            }
+
+            Messages.PrintBlankLines(1);
+            enterShift = UserInput.GetConfirmation("Enter another shift?");
         }
 
         Messages.PressAnyKeyToContinue();
