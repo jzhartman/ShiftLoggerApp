@@ -3,7 +3,6 @@ using ShiftLogger.Console.ApiClients.Shifts;
 using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
 using Spectre.Console;
-using System.Globalization;
 
 namespace ShiftLogger.Console.Presentation.Services;
 
@@ -18,25 +17,40 @@ internal class CreateShiftService
 
     public async Task RunAsync(EmployeeViewModel employee)
     {
-        AnsiConsole.Clear();
-        AnsiConsole.Write($"Enter new shift for {employee.FirstName} {employee.LastName}");
-        Messages.PrintBlankLines(2);
+        var enterShift = true;
 
-        AnsiConsole.Write("Start Time: ");
-        var startTime = DateTime.ParseExact(System.Console.ReadLine(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        while (enterShift)
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine($"Enter new shift for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]");
+            Messages.PrintBlankLines(2);
 
-        AnsiConsole.Write("End Time: ");
-        var endTime = DateTime.ParseExact(System.Console.ReadLine(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            var startTime = UserInput.GetTimeFromUser("Enter shift start time (Format: [yellow]yyyy-MM-dd HH:mm:ss[/]): ");
+            var endTime = UserInput.GetTimeFromUser("Enter shift end time (Format: [yellow]yyyy-MM-dd HH:mm:ss[/]): ");
 
-        var command = new CreateShiftCommand(employee.Id, startTime, endTime);
+            Messages.PrintBlankLines(1);
+            var confirmAdd = UserInput.GetConfirmation($"Add the following shift to work log for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]:" +
+                $"\r\n\tClock-in Time:\t[green]{startTime}[/]" +
+                $"\r\n\tClock-Out Time:\t[green]{endTime}[/]" +
+                $"\r\n\r\nConfirm add::");
 
-        var result = await _shiftApiClient.CreateAsync(command);
+            Messages.PrintBlankLines(1);
+            if (confirmAdd)
+            {
+                var command = new CreateShiftCommand(employee.Id, startTime, endTime);
 
-        if (result.IsSuccess)
-            AnsiConsole.WriteLine($"Successfully added shift.");
+                var result = await _shiftApiClient.CreateAsync(command);
 
-        if (result.IsFailure)
-            Messages.OutputErrorMessage(result.Errors);
+                if (result.IsSuccess)
+                    Messages.Success("Shift added");
+
+                if (result.IsFailure)
+                    Messages.OutputErrorMessage(result.Errors);
+
+                Messages.PrintBlankLines(2);
+                enterShift = UserInput.GetConfirmation("Enter another shift?");
+            }
+        }
 
         Messages.PressAnyKeyToContinue();
 

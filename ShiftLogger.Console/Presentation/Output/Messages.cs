@@ -11,9 +11,12 @@ internal static class Messages
         {
             AnsiConsole.MarkupLine($"[red]ERROR:[/] {error.Code} -- {error.Description}");
         }
-        PressAnyKeyToContinue();
     }
 
+    public static void Success(string message)
+    {
+        AnsiConsole.MarkupLine($"[green]SUCCESS:[/] {message}!");
+    }
     public static void GoodbyeMessage()
     {
         AnsiConsole.WriteLine("Goodbye!");

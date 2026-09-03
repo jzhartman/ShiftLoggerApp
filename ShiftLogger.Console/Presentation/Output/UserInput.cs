@@ -1,9 +1,12 @@
 ﻿using Spectre.Console;
+using System.Globalization;
 
 namespace ShiftLogger.Console.Presentation.Output;
 
 internal static class UserInput
 {
+    private static readonly string _timeFormat = "yyyy-MM-dd HH:mm:ss";
+
     internal static string GetNameFromUser(string message)
     {
         var namePrompt = new TextPrompt<string>(message)
@@ -21,19 +24,25 @@ internal static class UserInput
 
     internal static DateTime GetTimeFromUser(string message)
     {
-        var datePrompt = new TextPrompt<DateTime>(message)
-            .AllowEmpty()
+        var dateString = AnsiConsole.Prompt(
+            new TextPrompt<string>(message)
             .Validate(input =>
             {
-                if (input < DateTime.MinValue)
-                    return ValidationResult.Error("[red]Invalid Data:[/] Date must be in this millenium.");
-                if (input > DateTime.Now)
-                    return ValidationResult.Error("[red]Invalid Data:[/] Cannot enter a future time.");
+                if (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    return ValidationResult.Success();
 
-                return ValidationResult.Success();
-            });
+                bool isValid = DateTime.TryParseExact(
+                    input, _timeFormat,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out _);
 
-        return AnsiConsole.Prompt(datePrompt);
+                return isValid
+                    ? ValidationResult.Success()
+                    : ValidationResult.Error($"[red]Invalid format![/] Please use [yellow]{_timeFormat}[/].");
+            }));
+
+        return DateTime.ParseExact(dateString, _timeFormat, CultureInfo.InvariantCulture);
     }
 
     internal static bool GetConfirmation(string message)
