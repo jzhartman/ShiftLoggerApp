@@ -17,15 +17,19 @@ internal class UpdateEmployeeService
 
     public async Task<bool> RunAsync(EmployeeViewModel employee)
     {
+        var employeeUpdated = false;
+
         AnsiConsole.Clear();
-        AnsiConsole.Write($"Updating Employee Record for {employee.FirstName} {employee.LastName}");
+        AnsiConsole.MarkupLine($"Updating Employee Record for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]");
         Messages.PrintBlankLines(2);
 
-        var newFirstName = UserInput.GetNameFromUser("Enter new first name: ");
-        var newLastName = UserInput.GetNameFromUser("Enter new last name: ");
+        var newFirstName = UserInput.GetNameFromUser("Enter new [yellow]first name[/]: ");
+        var newLastName = UserInput.GetNameFromUser("Enter new [yellow]last name[/]: ");
 
-        var confirmUpdate = UserInput.GetConfirmation($"Confirm changing {employee.FirstName} {employee.LastName} to {newFirstName} {newLastName}?");
+        Messages.PrintBlankLines(1);
+        var confirmUpdate = UserInput.GetConfirmation($"Confirm changing [yellow]{employee.FirstName} {employee.LastName}[/] to [green]{newFirstName} {newLastName}[/]?");
 
+        Messages.PrintBlankLines(1);
         if (confirmUpdate == true)
         {
             var command = new UpdateEmployeeCommand(employee.Id, newFirstName, newLastName);
@@ -34,9 +38,8 @@ internal class UpdateEmployeeService
 
             if (result.IsSuccess)
             {
-                AnsiConsole.WriteLine($"Successfully updated {employee.FirstName} {employee.LastName} to {newFirstName} {newLastName}");
-                Messages.PressAnyKeyToContinue();
-                return true;
+                Messages.Success($"Updated [yellow]{employee.FirstName} {employee.LastName}[/] to [green]{newFirstName} {newLastName}[/]");
+                employeeUpdated = true;
             }
 
             if (result.IsFailure)
@@ -44,11 +47,12 @@ internal class UpdateEmployeeService
         }
         else
         {
-            AnsiConsole.WriteLine("Update cancelled.");
+            Messages.Cancelled($"Did not update [yellow]{employee.FirstName} {employee.LastName}[/]");
         }
 
+        Messages.PrintBlankLines(1);
         Messages.PressAnyKeyToContinue();
 
-        return false;
+        return employeeUpdated;
     }
 }
