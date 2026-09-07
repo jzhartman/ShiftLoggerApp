@@ -8,5 +8,6 @@ namespace ShiftLogger.Console.ApiClients.Shifts;
 internal interface IShiftApiClient
 {
     Task<Result> CreateAsync(CreateShiftCommand shift);
+    Task<Result<List<ShiftDto>>> GetByDateRangeAndIdAsync(EmployeeDto employee, DateTime startDate, DateTime endDate);
     Task<Result<List<ShiftDto>>> GetByIdAsync(EmployeeDto employee);
 }

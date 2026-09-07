@@ -68,6 +68,33 @@ internal class ShiftApiClient : IShiftApiClient
             return Result<List<ShiftDto>>.Failure(new Error("ApiError", ex.Message));
         }
     }
+    public async Task<Result<List<ShiftDto>>> GetByDateRangeAndIdAsync(EmployeeDto employee, DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            var response = await _http.GetAsync($"{employee.Id}/range?startDate={startDate:O}&endDate={endDate:O}");
+
+            if (!response.IsSuccessStatusCode)
+                return Result<List<ShiftDto>>.Failure(await ReadErrorsAsync(response));
+
+            var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<List<ShiftDto>>>();
+
+            if (deserializedResponse is null)
+                return Result<List<ShiftDto>>.Failure(Errors.DeserializationError);
+
+            if (deserializedResponse.IsFailure)
+                return Result<List<ShiftDto>>.Failure(deserializedResponse.Errors);
+
+            if (deserializedResponse.Value is null)
+                deserializedResponse.Value = new List<ShiftDto>();
+
+            return Result<List<ShiftDto>>.Success(deserializedResponse.Value);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<ShiftDto>>.Failure(new Error("ApiError", ex.Message));
+        }
+    }
 
     private async Task<List<Error>> ReadErrorsAsync(HttpResponseMessage response)
     {
