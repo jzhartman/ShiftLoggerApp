@@ -7,6 +7,7 @@ using ShiftLogger.Application.Employees.Requests.GetEmployeeById;
 using ShiftLogger.Application.Shifts.Commands.CreateShift;
 using ShiftLogger.Application.Shifts.Commands.DeleteShift;
 using ShiftLogger.Application.Shifts.Commands.UpdateShift;
+using ShiftLogger.Application.Shifts.Requests.GetShiftsByDateRangeAndEmployeeId;
 using ShiftLogger.Application.Shifts.Requests.GetShiftsByEmployeeId;
 
 namespace ShiftLogger.Application;
@@ -17,6 +18,7 @@ public static class DependencyInjection
     {
         services.AddScoped<CreateShiftHandler>();
         services.AddScoped<GetShiftsByEmployeeIdHandler>();
+        services.AddScoped<GetShiftsByDateRangeAndEmployeeIdHandler>();
         services.AddScoped<UpdateShiftHandler>();
         services.AddScoped<DeleteShiftHandler>();
 

@@ -3,6 +3,7 @@ using ShiftLogger.Api.DTOs;
 using ShiftLogger.Application.Shifts.Commands.CreateShift;
 using ShiftLogger.Application.Shifts.Commands.DeleteShift;
 using ShiftLogger.Application.Shifts.Commands.UpdateShift;
+using ShiftLogger.Application.Shifts.Requests.GetShiftsByDateRangeAndEmployeeId;
 using ShiftLogger.Application.Shifts.Requests.GetShiftsByEmployeeId;
 using ShiftLogger.Domain.Models;
 
@@ -28,6 +29,18 @@ public class ShiftsController : ControllerBase
         [FromServices] GetShiftsByEmployeeIdHandler handler)
     {
         var result = await handler.HandleAsync(new GetShiftsQuery(id));
+        return Ok(result);
+    }
+
+    [HttpGet("{id}/range")]
+    public async Task<ActionResult<ShiftLoggerApiResponse<List<Shift>>>> GetShiftsByDateRangeAndEmployeeIdAsync(
+        int id,
+        [FromQuery] DateTime startDate,
+        [FromQuery] DateTime endDate,
+        [FromServices] GetShiftsByDateRangeAndEmployeeIdHandler handler)
+    {
+        var query = new GetShiftsByDateRangeAndEmployeeIdQuery(id, startDate, endDate);
+        var result = await handler.HandleAsync(query);
         return Ok(result);
     }
 

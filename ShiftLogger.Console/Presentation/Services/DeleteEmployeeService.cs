@@ -2,7 +2,6 @@
 using ShiftLogger.Console.ApiClients.Employees;
 using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
-using Spectre.Console;
 
 namespace ShiftLogger.Console.Presentation.Services;
 
@@ -25,7 +24,7 @@ internal class DeleteEmployeeService
             var result = await _employeeApiClient.DeleteAsync(new DeleteEmployeeCommand(employee.Id, employee.FirstName, employee.LastName));
 
             if (result.IsSuccess)
-                AnsiConsole.WriteLine($"Successfully deleted {employee.FirstName} {employee.LastName}");
+                Messages.Success($"Deleted [green]{employee.FirstName} {employee.LastName}[/]");
 
             if (result.IsFailure)
                 Messages.OutputErrorMessage(result.Errors);

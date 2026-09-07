@@ -7,10 +7,8 @@ internal class EmployeeMenuView
 {
     public EmployeeMenuItem Render(EmployeeMenuItem[] menuItems)
     {
-        AnsiConsole.Clear();
         var selection = AnsiConsole.Prompt(
             new SelectionPrompt<EmployeeMenuItem>()
-                .Title("Select a menu option:")
                 .UseConverter(m => m switch
                 {
                     EmployeeMenuItem.LogShift => "Log a New Shift",

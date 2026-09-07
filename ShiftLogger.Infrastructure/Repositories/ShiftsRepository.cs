@@ -45,6 +45,24 @@ public class ShiftsRepository : IShiftsRepository
             return Result<List<Shift>>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
+    public async Task<Result<List<Shift>>> GetShiftsByDateRangeAndEmployeeIdAsync(int employeeId, DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            var response = await _context.Shifts.Where(s => s.EmployeeId == employeeId
+                                                        && s.ClockInTime >= startDate
+                                                        && s.ClockOutTime <= endDate).ToListAsync();
+
+            if (response is null || response.Count == 0)
+                response = new List<Shift>();
+
+            return Result<List<Shift>>.Success(response);
+        }
+        catch (Exception ex)
+        {
+            return Result<List<Shift>>.Failure(new Error("DatabaseError", ex.Message));
+        }
+    }
 
     // ToDo: Change update method to not use this style
     public async Task<Result> UpdateShiftByIdAsync(Shift updatedShift)

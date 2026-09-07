@@ -15,4 +15,5 @@ public interface IShiftsRepository
     Task<Result<bool>> OverlapsExistingShiftAsync(Shift shift);
     Task<Result<bool>> OverlapsExistingShiftsExcludingCurrentAsync(Shift shift);
     Task<Result<int>> ShiftCountByEmployeeIdAsync(int employeeId);
+    Task<Result<List<Shift>>> GetShiftsByDateRangeAndEmployeeIdAsync(int employeeId, DateTime startDate, DateTime endDate);
 }

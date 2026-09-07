@@ -48,7 +48,7 @@ internal class SelectEmployeeService
                 continue;
             }
 
-            if (result.Value is null || result.Value.Count == 0)
+            else if (result.Value is null || result.Value.Count == 0)
             {
                 AnsiConsole.WriteLine("No Employees Found");
                 Messages.PressAnyKeyToContinue();
@@ -78,6 +78,10 @@ internal class SelectEmployeeService
 
         while (returnToEmployeeSelection == false)
         {
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine($"Select menu item for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]:");
+            Messages.PrintBlankLines(1);
+
             var menuSelection = _employeeMenu.Render(Enum.GetValues<EmployeeMenuItem>().ToArray());
 
             switch (menuSelection)
@@ -103,7 +107,7 @@ internal class SelectEmployeeService
                     returnToEmployeeSelection = true;
                     return true;
                 default:
-                    AnsiConsole.WriteLine("ERROR: Unknown input for main menu selection!");
+                    AnsiConsole.MarkupLine("[red]ERROR:[/] Unknown input for main menu selection!");
                     break;
             }
         }
