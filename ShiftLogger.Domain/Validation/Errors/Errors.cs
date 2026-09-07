@@ -24,7 +24,7 @@ public static class Errors
     public static readonly Error EmployeeAlreadyExists = new("ER-409", "An employee with that name already exists.");
     public static readonly Error EmployeeNameIsBlank = new("ER-409", "Employee first and last names cannot be blank.");
 
-
+    public static readonly Error DateRangeError = new("DR-409", "The end date cannot precede the start date.");
     public static readonly Error ClockInTimePrecedesClockOutTime = new("SH-409", "The Clock In time cannot be on or after the Clock Out time.");
     public static readonly Error ShiftOverlapReturnedNull = new("SH-404", "Shift overlap check returned null.");
     public static readonly Error NewShiftOverlapsExistingShift = new("SH-409", "This shift cannot overlap an existing shift.");

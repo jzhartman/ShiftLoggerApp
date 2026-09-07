@@ -49,9 +49,11 @@ public class ShiftsRepository : IShiftsRepository
     {
         try
         {
-            var response = await _context.Shifts.Where(s => s.EmployeeId == employeeId
-                                                        && s.ClockInTime >= startDate
-                                                        && s.ClockOutTime <= endDate).ToListAsync();
+            var response = await _context.Shifts
+                .Where(s => s.EmployeeId == employeeId
+                        && s.ClockInTime <= endDate
+                        && s.ClockOutTime >= startDate)
+                .ToListAsync();
 
             if (response is null || response.Count == 0)
                 response = new List<Shift>();

@@ -19,13 +19,16 @@ public class GetShiftsByDateRangeAndEmployeeIdHandler
 
     public async Task<Result<List<ShiftDto>?>> HandleAsync(GetShiftsByDateRangeAndEmployeeIdQuery request)
     {
+        if (request.StartDate > request.EndDate)
+            return Result<List<ShiftDto>?>.Failure(Errors.DateRangeError);
+
         var employeeExistsResult = await _employeeRepository.EmployeeExistsByIdAsync(request.EmployeeId);
         if (!employeeExistsResult.Value)
             return Result<List<ShiftDto>?>.Failure(Errors.EmployeeNotFound);
         if (employeeExistsResult.IsFailure)
             return Result<List<ShiftDto>?>.Failure(employeeExistsResult.Errors);
 
-        var shiftsResult = await _shiftsRepository.GetAllShiftsByUserIdAsync(request.EmployeeId);
+        var shiftsResult = await _shiftsRepository.GetShiftsByDateRangeAndEmployeeIdAsync(request.EmployeeId, request.StartDate, request.EndDate);
         if (shiftsResult.IsFailure)
             return Result<List<ShiftDto>?>.Failure(shiftsResult.Errors);
 
