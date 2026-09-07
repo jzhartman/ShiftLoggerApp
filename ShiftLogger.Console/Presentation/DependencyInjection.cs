@@ -11,7 +11,10 @@ internal static class DependencyInjection
     {
         services.AddTransient<MainMenuView>();
         services.AddTransient<EmployeeMenuView>();
+        services.AddTransient<ShiftMenuView>();
+
         services.AddTransient<SelectEmployeeView>();
+        services.AddTransient<ShiftTableView>();
 
         services.AddTransient<SelectEmployeeService>();
         services.AddTransient<CreateEmployeeService>();

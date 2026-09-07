@@ -5,7 +5,7 @@ namespace ShiftLogger.Console.Presentation.Output;
 
 internal static class UserInput
 {
-    private static readonly string _timeFormat = "yyyy-MM-dd HH:mm:ss";
+    private static string _timeFormat = "yyyy-MM-dd HH:mm:ss";
 
     internal static string GetNameFromUser(string message)
     {
@@ -22,8 +22,10 @@ internal static class UserInput
         return AnsiConsole.Prompt(namePrompt);
     }
 
-    internal static DateTime GetTimeFromUser(string message)
+    internal static DateTime GetTimeFromUser(string message, bool dateOnly = false)
     {
+        if (dateOnly) _timeFormat = "yyyy-MM-dd";
+
         var dateString = AnsiConsole.Prompt(
             new TextPrompt<string>(message)
             .Validate(input =>

@@ -1,6 +1,9 @@
 ﻿using ShiftLogger.Console.ApiClients.Shifts;
+using ShiftLogger.Console.Presentation.Enums;
 using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
+using ShiftLogger.Console.Presentation.Views;
+using ShiftLogger.Console.Presentation.Views.Menus;
 using Spectre.Console;
 
 namespace ShiftLogger.Console.Presentation.Services;
@@ -8,10 +11,14 @@ namespace ShiftLogger.Console.Presentation.Services;
 internal class ViewShiftsService
 {
     private readonly IShiftApiClient _shiftApiClient;
+    private readonly ShiftTableView _shiftTableView;
+    private readonly ShiftMenuView _shiftMenuView;
 
-    public ViewShiftsService(IShiftApiClient shiftApiClient)
+    public ViewShiftsService(IShiftApiClient shiftApiClient, ShiftTableView shiftTableView, ShiftMenuView shiftMenuView)
     {
         _shiftApiClient = shiftApiClient;
+        _shiftTableView = shiftTableView;
+        _shiftMenuView = shiftMenuView;
     }
 
     public async Task RunAsync(EmployeeViewModel employee)
@@ -25,34 +32,53 @@ internal class ViewShiftsService
             Messages.PrintBlankLines(2);
 
 
-            // ToDo: Determine how to get date ranges -- or ignore it and print all like this anyway
+            var startDate = UserInput.GetTimeFromUser("Enter start date (Format: [yellow]yyyy-MM-dd[/]): ", true);
+            var endDate = UserInput.GetTimeFromUser("Enter end date (Format: [yellow]yyyy-MM-dd[/]): ", true);
+            endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59);
 
 
-            var result = await _shiftApiClient.GetByIdAsync(new(employee.Id, employee.FirstName, employee.LastName));
+            var result = await _shiftApiClient.GetByDateRangeAndIdAsync(new(employee.Id, employee.FirstName, employee.LastName),
+                                                                        startDate,
+                                                                        endDate);
 
             if (result.IsSuccess)
             {
-                if (result.Value.Count == 0)
-                {
-                    AnsiConsole.WriteLine($"No shifts recorded for {employee.FirstName} {employee.LastName}");
-                }
-                else
-                {
-                    AnsiConsole.WriteLine($"Id\tStart Time\tEnd Time");
+                _shiftTableView.Render(result.Value);
 
-                    foreach (var shift in result.Value)
-                    {
-                        AnsiConsole.WriteLine($"{shift.Id}\t{shift.ClockInTime}\t{shift.ClockOutTime}");
-                    }
-                    Messages.PressAnyKeyToContinue();
+                var menuSelection = _shiftMenuView.Render(Enum.GetValues<ShiftMenuItem>().ToArray());
+
+                switch (menuSelection)
+                {
+                    case ShiftMenuItem.EditShift:
+                        await UpdateShift();
+                        break;
+                    case ShiftMenuItem.DeleteShift:
+                        await DeleteShift();
+                        break;
+                    case ShiftMenuItem.Return:
+                        break;
+                    default:
+                        AnsiConsole.MarkupLine("[red]ERROR:[/] Unknown input for main menu selection!");
+                        break;
                 }
+
+                if (result.IsFailure)
+                    Messages.OutputErrorMessage(result.Errors);
+
+                returnToEmployeeMenu = !UserInput.GetConfirmation("Select a new date range?");
             }
 
-            if (result.IsFailure)
-                Messages.OutputErrorMessage(result.Errors);
-
-            Messages.PressAnyKeyToContinue();
             return;
         }
+    }
+
+    private async Task UpdateShift()
+    {
+
+    }
+
+    private async Task DeleteShift()
+    {
+
     }
 }

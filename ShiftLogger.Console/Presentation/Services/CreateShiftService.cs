@@ -56,9 +56,6 @@ internal class CreateShiftService
             Messages.PrintBlankLines(1);
             enterShift = UserInput.GetConfirmation("Enter another shift?");
         }
-
-        Messages.PressAnyKeyToContinue();
-
         return;
     }
 }
