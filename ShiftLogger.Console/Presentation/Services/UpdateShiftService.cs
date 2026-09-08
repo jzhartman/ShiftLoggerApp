@@ -45,7 +45,7 @@ internal class UpdateShiftService
 
             if (confirmUpdate)
             {
-                var result = await _shiftApiClient.UpdateAsync();
+                var result = await _shiftApiClient.UpdateAsync(new UpdateShiftCommand());
 
                 if (result.IsSuccess)
                 {
