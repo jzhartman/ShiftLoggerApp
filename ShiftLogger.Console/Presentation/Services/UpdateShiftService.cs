@@ -29,9 +29,15 @@ internal class UpdateShiftService
 
             PrintTime(shift.ClockInTime);
             var newClockInTime = UserInput.GetUpdatedTimeFromUser("Enter new [yellow]Clock-In Time[/]: ");
-
+            Messages.PrintBlankLines(1);
             PrintTime(shift.ClockOutTime);
-            var newClockOutTime = UserInput.GetUpdatedTimeFromUser("Enter new [yellow]Clock-In Time[/]: ");
+            var newClockOutTime = UserInput.GetUpdatedTimeFromUser("Enter new [yellow]Clock-Out Time[/]: ");
+
+            if (newClockInTime == DateTime.MinValue)
+                newClockInTime = shift.ClockInTime;
+
+            if (newClockOutTime == DateTime.MinValue)
+                newClockOutTime = shift.ClockOutTime;
 
             if (newClockOutTime < newClockInTime)
             {
@@ -79,11 +85,11 @@ internal class UpdateShiftService
 
         var clockInTimeMessage = (originalClockInTime == newClockInTime) ?
             "[green]No Changes[/]" :
-            $"{originalClockInTime.ToString(dateFormat)}\t changed to\t{newClockInTime.ToString(dateFormat)}";
+            $"[yellow]{originalClockInTime.ToString(dateFormat)}[/]\t changed to\t[green]{newClockInTime.ToString(dateFormat)}[/]";
 
         var clockOutTimeMessage = (originalClockOutTime == newClockOutTime) ?
             "[green]No Changes[/]" :
-            $"{originalClockOutTime.ToString(dateFormat)}\t changed to\t{newClockOutTime.ToString(dateFormat)}";
+            $"[yellow]{originalClockOutTime.ToString(dateFormat)}[/]\t changed to\t[green]{newClockOutTime.ToString(dateFormat)}[/]";
 
         return $"The following changes will be applied to the selected shift:" +
                 $"\r\n\tClock-In Time:\t{clockInTimeMessage}" +

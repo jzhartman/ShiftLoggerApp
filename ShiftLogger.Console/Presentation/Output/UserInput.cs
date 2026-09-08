@@ -5,7 +5,7 @@ namespace ShiftLogger.Console.Presentation.Output;
 
 internal static class UserInput
 {
-    private static string _timeFormat = "yyyy-MM-dd HH:mm:ss";
+    private static readonly string _timeFormat = "yyyy-MM-dd HH:mm:ss";
 
     internal static string GetNameFromUser(string message)
     {
@@ -40,7 +40,9 @@ internal static class UserInput
 
     internal static DateTime GetTimeFromUser(string message, bool dateOnly = false)
     {
-        if (dateOnly) _timeFormat = "yyyy-MM-dd";
+        var timeFormatToUse = _timeFormat;
+
+        if (dateOnly) timeFormatToUse = "yyyy-MM-dd";
 
         var dateString = AnsiConsole.Prompt(
             new TextPrompt<string>(message)
@@ -50,17 +52,17 @@ internal static class UserInput
                     return ValidationResult.Success();
 
                 bool isValid = DateTime.TryParseExact(
-                    input, _timeFormat,
+                    input, timeFormatToUse,
                     CultureInfo.InvariantCulture,
                     DateTimeStyles.None,
                     out _);
 
                 return isValid
                     ? ValidationResult.Success()
-                    : ValidationResult.Error($"[red]Invalid format![/] Please use [yellow]{_timeFormat}[/].");
+                    : ValidationResult.Error($"[red]Invalid format![/] Please use [yellow]{timeFormatToUse}[/].");
             }));
 
-        return DateTime.ParseExact(dateString, _timeFormat, CultureInfo.InvariantCulture);
+        return DateTime.ParseExact(dateString, timeFormatToUse, CultureInfo.InvariantCulture);
     }
 
     internal static DateTime GetUpdatedTimeFromUser(string message)
@@ -75,6 +77,9 @@ internal static class UserInput
                     CultureInfo.InvariantCulture,
                     DateTimeStyles.None,
                     out _);
+
+                if (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    isValid = true;
 
                 return isValid
                     ? ValidationResult.Success()

@@ -43,47 +43,56 @@ internal class ViewShiftsService
             var endDate = UserInput.GetTimeFromUser("Enter end date (Format: [yellow]yyyy-MM-dd[/]): ", true);
             endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59);
 
-
-            var result = await _shiftApiClient.GetByDateRangeAndIdAsync(new(employee.Id, employee.FirstName, employee.LastName),
-                                                                        startDate,
-                                                                        endDate);
-
-            if (result.IsSuccess)
+            bool newDateRange = false;
+            while (newDateRange == false)
             {
-                _shiftTableView.Render(result.Value);
+                AnsiConsole.Clear();
+                AnsiConsole.MarkupLine($"Viewing shifts for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]");
+                Messages.PrintBlankLines(2);
 
-                var menuOptions = Enum.GetValues<ShiftMenuItem>().ToArray();
+                var result = await _shiftApiClient.GetByDateRangeAndIdAsync(new(employee.Id, employee.FirstName, employee.LastName),
+                                                                            startDate,
+                                                                            endDate);
 
-                if (result.Value is null || result.Value.Count == 0)
+                if (result.IsSuccess)
                 {
-                    ShiftMenuItem[] unusedItems = { ShiftMenuItem.EditShift, ShiftMenuItem.DeleteShift };
-                    menuOptions = menuOptions.Except(unusedItems).ToArray();
+                    _shiftTableView.Render(result.Value);
+
+                    var menuOptions = Enum.GetValues<ShiftMenuItem>().ToArray();
+
+                    if (result.Value is null || result.Value.Count == 0)
+                    {
+                        ShiftMenuItem[] unusedItems = { ShiftMenuItem.EditShift, ShiftMenuItem.DeleteShift };
+                        menuOptions = menuOptions.Except(unusedItems).ToArray();
+                    }
+
+                    var menuSelection = _shiftMenuView.Render(menuOptions);
+
+                    switch (menuSelection)
+                    {
+                        case ShiftMenuItem.EditShift:
+                            var shift = GetShiftFromUser(result.Value, "edit");
+                            await _updateShiftService.RunAsync(employee, shift);
+                            break;
+                        case ShiftMenuItem.DeleteShift:
+                            await _deleteShiftService.RunAsync();
+                            break;
+                        case ShiftMenuItem.SelectNewDateRange:
+                            newDateRange = true;
+                            break;
+                        case ShiftMenuItem.Return:
+                            newDateRange = true;
+                            returnToEmployeeMenu = true;
+                            break;
+                        default:
+                            AnsiConsole.MarkupLine("[red]ERROR:[/] Unknown input for main menu selection!");
+                            break;
+                    }
+
+                    if (result.IsFailure)
+                        Messages.OutputErrorMessage(result.Errors);
                 }
-
-                var menuSelection = _shiftMenuView.Render(menuOptions);
-
-                switch (menuSelection)
-                {
-                    case ShiftMenuItem.EditShift:
-                        var shift = GetShiftFromUser(result.Value, "edit");
-                        await _updateShiftService.RunAsync(employee, shift);
-                        break;
-                    case ShiftMenuItem.DeleteShift:
-                        await _deleteShiftService.RunAsync();
-                        break;
-                    case ShiftMenuItem.Return:
-                        break;
-                    default:
-                        AnsiConsole.MarkupLine("[red]ERROR:[/] Unknown input for main menu selection!");
-                        break;
-                }
-
-                if (result.IsFailure)
-                    Messages.OutputErrorMessage(result.Errors);
-
-                returnToEmployeeMenu = !UserInput.GetConfirmation("Select a new date range?");
             }
-
             return;
         }
     }
