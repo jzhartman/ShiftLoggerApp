@@ -23,6 +23,8 @@ internal static class DependencyInjection
 
         services.AddTransient<CreateShiftService>();
         services.AddTransient<ViewShiftsService>();
+        services.AddTransient<UpdateShiftService>();
+        services.AddTransient<DeleteShiftService>();
 
         return services;
     }

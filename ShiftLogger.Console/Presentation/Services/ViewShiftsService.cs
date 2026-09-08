@@ -1,4 +1,5 @@
-﻿using ShiftLogger.Console.ApiClients.Shifts;
+﻿using ShiftLogger.Application.Shifts.Dtos;
+using ShiftLogger.Console.ApiClients.Shifts;
 using ShiftLogger.Console.Presentation.Enums;
 using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
@@ -13,12 +14,18 @@ internal class ViewShiftsService
     private readonly IShiftApiClient _shiftApiClient;
     private readonly ShiftTableView _shiftTableView;
     private readonly ShiftMenuView _shiftMenuView;
+    private readonly UpdateShiftService _updateShiftService;
+    private readonly DeleteShiftService _deleteShiftService;
 
-    public ViewShiftsService(IShiftApiClient shiftApiClient, ShiftTableView shiftTableView, ShiftMenuView shiftMenuView)
+
+    public ViewShiftsService(IShiftApiClient shiftApiClient, ShiftTableView shiftTableView, ShiftMenuView shiftMenuView,
+                            UpdateShiftService updateShiftService, DeleteShiftService deleteShiftService)
     {
         _shiftApiClient = shiftApiClient;
         _shiftTableView = shiftTableView;
         _shiftMenuView = shiftMenuView;
+        _updateShiftService = updateShiftService;
+        _deleteShiftService = deleteShiftService;
     }
 
     public async Task RunAsync(EmployeeViewModel employee)
@@ -45,15 +52,24 @@ internal class ViewShiftsService
             {
                 _shiftTableView.Render(result.Value);
 
-                var menuSelection = _shiftMenuView.Render(Enum.GetValues<ShiftMenuItem>().ToArray());
+                var menuOptions = Enum.GetValues<ShiftMenuItem>().ToArray();
+
+                if (result.Value is null || result.Value.Count == 0)
+                {
+                    ShiftMenuItem[] unusedItems = { ShiftMenuItem.EditShift, ShiftMenuItem.DeleteShift };
+                    menuOptions = menuOptions.Except(unusedItems).ToArray();
+                }
+
+                var menuSelection = _shiftMenuView.Render(menuOptions);
 
                 switch (menuSelection)
                 {
                     case ShiftMenuItem.EditShift:
-                        await UpdateShift();
+                        var shift = GetShiftFromUser(result.Value, "edit");
+                        await _updateShiftService.RunAsync(employee, shift);
                         break;
                     case ShiftMenuItem.DeleteShift:
-                        await DeleteShift();
+                        await _deleteShiftService.RunAsync();
                         break;
                     case ShiftMenuItem.Return:
                         break;
@@ -72,13 +88,11 @@ internal class ViewShiftsService
         }
     }
 
-    private async Task UpdateShift()
+    private ShiftDto GetShiftFromUser(List<ShiftDto> shifts, string action)
     {
+        var message = $"Enter the row [yellow]Id[/] of the shift you would like to {action}:";
+        var index = UserInput.GetNumberFromUser(message, shifts.Count) - 1;
 
-    }
-
-    private async Task DeleteShift()
-    {
-
+        return shifts[index];
     }
 }

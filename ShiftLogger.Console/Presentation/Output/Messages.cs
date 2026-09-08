@@ -5,6 +5,11 @@ namespace ShiftLogger.Console.Presentation.Output;
 
 internal static class Messages
 {
+    public static void OutputErrorMessage(Error error)
+    {
+        var errors = new Error[] { error };
+        OutputErrorMessage(errors);
+    }
     public static void OutputErrorMessage(IEnumerable<Error> errors)
     {
         foreach (var error in errors)

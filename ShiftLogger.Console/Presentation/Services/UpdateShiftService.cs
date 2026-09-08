@@ -1,0 +1,98 @@
+﻿using ShiftLogger.Application.Shifts.Dtos;
+using ShiftLogger.Console.ApiClients.Shifts;
+using ShiftLogger.Console.Presentation.Models;
+using ShiftLogger.Console.Presentation.Output;
+using ShiftLogger.Domain.Validation.Errors;
+using Spectre.Console;
+
+namespace ShiftLogger.Console.Presentation.Services;
+
+internal class UpdateShiftService
+{
+    private readonly IShiftApiClient _shiftApiClient;
+
+    public UpdateShiftService(IShiftApiClient shiftApiClient)
+    {
+        _shiftApiClient = shiftApiClient;
+    }
+
+    public async Task RunAsync(EmployeeViewModel employee, ShiftDto shift)
+    {
+        var continueUpdate = true;
+
+        while (continueUpdate)
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine($"Updating Shift for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]");
+            Messages.PrintBlankLines(2);
+
+            PrintTime(shift.ClockInTime);
+            var newClockInTime = UserInput.GetUpdatedTimeFromUser("Enter new [yellow]Clock-In Time[/]: ");
+
+            PrintTime(shift.ClockOutTime);
+            var newClockOutTime = UserInput.GetUpdatedTimeFromUser("Enter new [yellow]Clock-In Time[/]: ");
+
+            if (newClockOutTime < newClockInTime)
+            {
+                Messages.OutputErrorMessage(Errors.ClockInTimePrecedesClockOutTime);
+                continueUpdate = false;
+                Messages.PressAnyKeyToContinue();
+                continue;
+            }
+
+            var message = BuildUpdateConfirmationMessage(shift.ClockInTime, newClockInTime, shift.ClockOutTime, newClockOutTime);
+            var confirmUpdate = UserInput.GetConfirmation(message);
+
+            if (confirmUpdate)
+            {
+                var result = await _shiftApiClient.UpdateAsync();
+
+                if (result.IsSuccess)
+                {
+                    Messages.Success($"Updated shift");
+                    continueUpdate = false;
+                    Messages.PressAnyKeyToContinue();
+                    continue;
+                }
+
+                if (result.IsFailure)
+                {
+                    Messages.OutputErrorMessage(result.Errors);
+                    Messages.PrintBlankLines(1);
+                }
+            }
+            else
+            {
+                Messages.Cancelled("Current shift not updated.");
+            }
+
+            continueUpdate = UserInput.GetConfirmation("Re-enter the updated times?");
+        }
+    }
+
+    private string BuildUpdateConfirmationMessage(DateTime originalClockInTime, DateTime newClockInTime,
+                                                    DateTime originalClockOutTime, DateTime newClockOutTime)
+    {
+        var dateFormat = "yyyy-MM-dd HH:mm:ss";
+
+        var clockInTimeMessage = (originalClockInTime == newClockInTime) ?
+            "[green]No Changes[/]" :
+            $"{originalClockInTime.ToString(dateFormat)}\t changed to\t{newClockInTime.ToString(dateFormat)}";
+
+        var clockOutTimeMessage = (originalClockOutTime == newClockOutTime) ?
+            "[green]No Changes[/]" :
+            $"{originalClockOutTime.ToString(dateFormat)}\t changed to\t{newClockOutTime.ToString(dateFormat)}";
+
+        return $"The following changes will be applied to the selected shift:" +
+                $"\r\n\tClock-In Time:\t{clockInTimeMessage}" +
+                $"\r\n\tClock-Out Time:\t{clockOutTimeMessage}" +
+                $"\r\n\r\nConfirm changes:";
+    }
+    private void PrintTime(DateTime time)
+    {
+        string parameterColor = "yellow";
+        string valueColor = "green";
+
+        AnsiConsole.MarkupLine($"Current [{parameterColor}]Clock-In Time[/]: [{valueColor}]{time.ToString("yyyy-MM-dd HH:mm:ss")}[/]");
+    }
+}
