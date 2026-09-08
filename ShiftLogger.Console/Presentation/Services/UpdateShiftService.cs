@@ -1,4 +1,5 @@
-﻿using ShiftLogger.Application.Shifts.Dtos;
+﻿using ShiftLogger.Application.Shifts.Commands.UpdateShift;
+using ShiftLogger.Application.Shifts.Dtos;
 using ShiftLogger.Console.ApiClients.Shifts;
 using ShiftLogger.Console.Presentation.Models;
 using ShiftLogger.Console.Presentation.Output;
@@ -45,7 +46,8 @@ internal class UpdateShiftService
 
             if (confirmUpdate)
             {
-                var result = await _shiftApiClient.UpdateAsync(new UpdateShiftCommand());
+                var command = new UpdateShiftCommand(shift.Id, shift.EmployeeId, newClockInTime, newClockOutTime);
+                var result = await _shiftApiClient.UpdateAsync(command);
 
                 if (result.IsSuccess)
                 {
