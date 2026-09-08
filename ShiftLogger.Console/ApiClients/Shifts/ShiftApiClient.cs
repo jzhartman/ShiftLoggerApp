@@ -1,5 +1,7 @@
 ﻿using ShiftLogger.Application.Employees.Dtos;
 using ShiftLogger.Application.Shifts.Commands.CreateShift;
+using ShiftLogger.Application.Shifts.Commands.DeleteShift;
+using ShiftLogger.Application.Shifts.Commands.UpdateShift;
 using ShiftLogger.Application.Shifts.Dtos;
 using ShiftLogger.Console.ApiClients.Responses;
 using ShiftLogger.Domain.Validation;
@@ -93,6 +95,61 @@ internal class ShiftApiClient : IShiftApiClient
         catch (Exception ex)
         {
             return Result<List<ShiftDto>>.Failure(new Error("ApiError", ex.Message));
+        }
+    }
+
+    public async Task<Result> UpdateAsync(UpdateShiftCommand command)
+    {
+        try
+        {
+            var response = await _http.PutAsJsonAsync($"{command.Id}", command);
+
+            if (!response.IsSuccessStatusCode)
+                return Result.Failure(await ReadErrorsAsync(response));
+
+            var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+
+            if (deserializedResponse is null)
+                return Result.Failure(Errors.DeserializationError);
+
+            if (deserializedResponse.IsFailure)
+                return Result.Failure(deserializedResponse.Errors);
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EmployeeDto>>.Failure(new Error("ApiError", ex.Message));
+        }
+    }
+    public async Task<Result> DeleteAsync(DeleteShiftCommand command)
+    {
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{command.Id}")
+            {
+                Content = JsonContent.Create(command)
+            };
+
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                return Result.Failure(await ReadErrorsAsync(response));
+
+            var deserializedResponse = await response.Content.ReadFromJsonAsync<ApiResponse<object>>();
+
+            if (deserializedResponse is null)
+                return Result.Failure(Errors.DeserializationError);
+
+            if (deserializedResponse.IsFailure)
+                return Result.Failure(deserializedResponse.Errors);
+
+            return Result.Success();
+
+        }
+        catch (Exception ex)
+        {
+            return Result<List<EmployeeDto>>.Failure(new Error("ApiError", ex.Message));
         }
     }
 
