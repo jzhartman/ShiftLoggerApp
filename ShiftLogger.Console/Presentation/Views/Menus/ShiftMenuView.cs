@@ -13,6 +13,7 @@ internal class ShiftMenuView
                 {
                     ShiftMenuItem.EditShift => "Edit Shift Time",
                     ShiftMenuItem.DeleteShift => "Delete Shift",
+                    ShiftMenuItem.SelectNewDateRange => "Select New Date Range",
                     ShiftMenuItem.Return => "Return to Last Menu",
                     _ => m.ToString()
                 })

@@ -58,6 +58,10 @@ internal class ViewShiftsService
                 {
                     _shiftTableView.Render(result.Value);
 
+                    Messages.PrintBlankLines(1);
+                    PrintDurationForRange(CalculateShiftDurationForRange(result.Value));
+                    Messages.PrintBlankLines(2);
+
                     var menuOptions = Enum.GetValues<ShiftMenuItem>().ToArray();
 
                     if (result.Value is null || result.Value.Count == 0)
@@ -75,7 +79,8 @@ internal class ViewShiftsService
                             await _updateShiftService.RunAsync(employee, shift);
                             break;
                         case ShiftMenuItem.DeleteShift:
-                            await _deleteShiftService.RunAsync();
+                            shift = GetShiftFromUser(result.Value, "edit");
+                            await _deleteShiftService.RunAsync(employee, shift);
                             break;
                         case ShiftMenuItem.SelectNewDateRange:
                             newDateRange = true;
@@ -93,8 +98,8 @@ internal class ViewShiftsService
                         Messages.OutputErrorMessage(result.Errors);
                 }
             }
-            return;
         }
+        return;
     }
 
     private ShiftDto GetShiftFromUser(List<ShiftDto> shifts, string action)
@@ -103,5 +108,24 @@ internal class ViewShiftsService
         var index = UserInput.GetNumberFromUser(message, shifts.Count) - 1;
 
         return shifts[index];
+    }
+
+    private double CalculateShiftDurationForRange(List<ShiftDto> shifts)
+    {
+        double duration = 0;
+
+        foreach (var shift in shifts)
+        {
+            duration += (shift.ClockOutTime - shift.ClockInTime).TotalSeconds;
+        }
+
+        return duration;
+    }
+    private void PrintDurationForRange(double durationSeconds)
+    {
+        var duration = TimeSpan.FromSeconds(durationSeconds);
+
+        AnsiConsole.MarkupLine($"[DeepSkyBlue1]Total Duration for Range[/]: [green]" +
+            $"{(int)Math.Floor(duration.TotalHours):D2}:{duration.Minutes:D2}:{duration.Seconds:D2}[/]");
     }
 }

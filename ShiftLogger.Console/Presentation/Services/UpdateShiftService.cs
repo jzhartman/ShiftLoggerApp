@@ -33,6 +33,8 @@ internal class UpdateShiftService
             PrintTime(shift.ClockOutTime);
             var newClockOutTime = UserInput.GetUpdatedTimeFromUser("Enter new [yellow]Clock-Out Time[/]: ");
 
+            Messages.PrintBlankLines(1);
+
             if (newClockInTime == DateTime.MinValue)
                 newClockInTime = shift.ClockInTime;
 
@@ -49,6 +51,7 @@ internal class UpdateShiftService
 
             var message = BuildUpdateConfirmationMessage(shift.ClockInTime, newClockInTime, shift.ClockOutTime, newClockOutTime);
             var confirmUpdate = UserInput.GetConfirmation(message);
+            Messages.PrintBlankLines(1);
 
             if (confirmUpdate)
             {
@@ -58,6 +61,7 @@ internal class UpdateShiftService
                 if (result.IsSuccess)
                 {
                     Messages.Success($"Updated shift");
+                    Messages.PrintBlankLines(1);
                     continueUpdate = false;
                     Messages.PressAnyKeyToContinue();
                     continue;
@@ -72,6 +76,7 @@ internal class UpdateShiftService
             else
             {
                 Messages.Cancelled("Current shift not updated.");
+                Messages.PrintBlankLines(1);
             }
 
             continueUpdate = UserInput.GetConfirmation("Re-enter the updated times?");
@@ -85,15 +90,22 @@ internal class UpdateShiftService
 
         var clockInTimeMessage = (originalClockInTime == newClockInTime) ?
             "[green]No Changes[/]" :
-            $"[yellow]{originalClockInTime.ToString(dateFormat)}[/]\t changed to\t[green]{newClockInTime.ToString(dateFormat)}[/]";
+            $"[yellow]{originalClockInTime.ToString(dateFormat)}[/]\tchanged to\t[green]{newClockInTime.ToString(dateFormat)}[/]";
 
         var clockOutTimeMessage = (originalClockOutTime == newClockOutTime) ?
             "[green]No Changes[/]" :
-            $"[yellow]{originalClockOutTime.ToString(dateFormat)}[/]\t changed to\t[green]{newClockOutTime.ToString(dateFormat)}[/]";
+            $"[yellow]{originalClockOutTime.ToString(dateFormat)}[/]\tchanged to\t[green]{newClockOutTime.ToString(dateFormat)}[/]";
+
+        var durationMessage = ((originalClockInTime == newClockInTime) && (originalClockOutTime == newClockOutTime)) ?
+            "[green]No Changes[/]" :
+            $"[yellow]{(originalClockOutTime - originalClockInTime).ToString(@"hh\:mm\:ss")}[/]\tchanged to" +
+            $"\t[green]{(newClockOutTime - newClockInTime).ToString(@"hh\:mm\:ss")}[/]";
+
 
         return $"The following changes will be applied to the selected shift:" +
                 $"\r\n\tClock-In Time:\t{clockInTimeMessage}" +
                 $"\r\n\tClock-Out Time:\t{clockOutTimeMessage}" +
+                $"\r\n\tDuration:\t{durationMessage}\t" +
                 $"\r\n\r\nConfirm changes:";
     }
     private void PrintTime(DateTime time)
