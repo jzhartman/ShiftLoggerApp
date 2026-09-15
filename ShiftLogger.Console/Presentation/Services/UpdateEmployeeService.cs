@@ -19,39 +19,50 @@ internal class UpdateEmployeeService
     {
         var employeeUpdated = false;
 
-        AnsiConsole.Clear();
-        AnsiConsole.MarkupLine($"Updating Employee Record for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]");
-        Messages.PrintBlankLines(2);
+        var continueUpdate = true;
 
-        var newFirstName = UserInput.GetNameFromUser("Enter new [yellow]first name[/]: ");
-        var newLastName = UserInput.GetNameFromUser("Enter new [yellow]last name[/]: ");
-
-        Messages.PrintBlankLines(1);
-        var confirmUpdate = UserInput.GetConfirmation($"Confirm changing [yellow]{employee.FirstName} {employee.LastName}[/] to [green]{newFirstName} {newLastName}[/]?");
-
-        Messages.PrintBlankLines(1);
-        if (confirmUpdate == true)
+        while (continueUpdate)
         {
-            var command = new UpdateEmployeeCommand(employee.Id, newFirstName, newLastName);
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine($"Updating Employee Record for [DeepSkyBlue1]{employee.FirstName} {employee.LastName}[/]");
+            Messages.PrintBlankLines(2);
 
-            var result = await _employeeApiClient.UpdateAsync(command);
+            var newFirstName = UserInput.GetNameFromUser("Enter new [yellow]first name[/]: ");
+            var newLastName = UserInput.GetNameFromUser("Enter new [yellow]last name[/]: ");
 
-            if (result.IsSuccess)
+            Messages.PrintBlankLines(1);
+            var confirmUpdate = UserInput.GetConfirmation($"Confirm changing [yellow]{employee.FirstName} {employee.LastName}[/] to [green]{newFirstName} {newLastName}[/]?");
+
+            Messages.PrintBlankLines(1);
+            if (confirmUpdate == true)
             {
-                Messages.Success($"Updated [yellow]{employee.FirstName} {employee.LastName}[/] to [green]{newFirstName} {newLastName}[/]");
-                employeeUpdated = true;
+                var command = new UpdateEmployeeCommand(employee.Id, newFirstName, newLastName);
+                var result = await _employeeApiClient.UpdateAsync(command);
+
+                if (result.IsSuccess)
+                {
+                    Messages.Success($"Updated [yellow]{employee.FirstName} {employee.LastName}[/] to [green]{newFirstName} {newLastName}[/]");
+                    Messages.PrintBlankLines(1);
+                    Messages.PressAnyKeyToContinue();
+                    continueUpdate = false;
+                    employeeUpdated = true;
+                    continue;
+                }
+
+                if (result.IsFailure)
+                {
+                    Messages.OutputErrorMessage(result.Errors);
+                    Messages.PrintBlankLines(1);
+                }
+            }
+            else
+            {
+                Messages.Cancelled($"Did not update [yellow]{employee.FirstName} {employee.LastName}[/]");
+                Messages.PrintBlankLines(1);
             }
 
-            if (result.IsFailure)
-                Messages.OutputErrorMessage(result.Errors);
+            continueUpdate = UserInput.GetConfirmation("Retry updating employee name?");
         }
-        else
-        {
-            Messages.Cancelled($"Did not update [yellow]{employee.FirstName} {employee.LastName}[/]");
-        }
-
-        Messages.PrintBlankLines(1);
-        Messages.PressAnyKeyToContinue();
 
         return employeeUpdated;
     }
