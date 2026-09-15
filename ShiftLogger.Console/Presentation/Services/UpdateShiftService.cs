@@ -79,7 +79,7 @@ internal class UpdateShiftService
                 Messages.PrintBlankLines(1);
             }
 
-            continueUpdate = UserInput.GetConfirmation("Re-enter the updated times?");
+            continueUpdate = UserInput.GetConfirmation("Retry updating shift?");
         }
     }
 
