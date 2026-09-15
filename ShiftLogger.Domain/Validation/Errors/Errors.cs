@@ -28,5 +28,4 @@ public static class Errors
     // Unknown Errors
     public static readonly Error SaveFailed = new("SL50001", "Save failed for unknown reason.");
     public static readonly Error DeserializationError = new("SL50002", "Could not parse API response.");
-
 }

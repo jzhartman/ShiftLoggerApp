@@ -17,7 +17,6 @@ internal static class Messages
             AnsiConsole.MarkupLine($"[red]ERROR:[/] {error.Code} -- {error.Description}");
         }
     }
-
     public static void Success(string message)
     {
         AnsiConsole.MarkupLine($"[green]SUCCESS:[/] {message}!");
@@ -36,7 +35,6 @@ internal static class Messages
         AnsiConsole.WriteLine("Press any key to continue");
         AnsiConsole.Console.Input.ReadKey(false);
     }
-
     public static void PrintBlankLines(int lines)
     {
         for (int i = 0; i < lines; i++)

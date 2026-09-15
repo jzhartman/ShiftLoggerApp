@@ -29,6 +29,7 @@ public class EmployeesController : ControllerBase
         var result = await handler.HandleAsync();
         return Ok(result);
     }
+
     [HttpGet("{id}")]
     public async Task<ActionResult> GetEmployeeById(
         int id,
@@ -59,5 +60,4 @@ public class EmployeesController : ControllerBase
         var result = await handler.HandleAsync(command);
         return Ok(result);
     }
-
 }

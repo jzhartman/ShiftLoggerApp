@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ApiClients\Http\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

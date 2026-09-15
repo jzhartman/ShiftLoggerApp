@@ -30,5 +30,4 @@ internal class Program
 
         await host.Services.GetRequiredService<App>().RunAsync();
     }
-
 }

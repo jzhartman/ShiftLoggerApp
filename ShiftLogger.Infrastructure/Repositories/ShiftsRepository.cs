@@ -28,7 +28,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result<List<Shift>>> GetAllShiftsByUserIdAsync(int employeeId)
     {
         try
@@ -65,8 +64,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result<List<Shift>>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
-    // ToDo: Change update method to not use this style
     public async Task<Result> UpdateShiftByIdAsync(Shift updatedShift)
     {
         try
@@ -88,7 +85,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result> DeleteShiftAsync(Shift shift)
     {
         try
@@ -104,7 +100,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result<int>> ShiftCountByEmployeeIdAsync(int employeeId)
     {
         try
@@ -118,7 +113,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result<int>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result> DeleteAllShiftsByEmployeeIdAsync(int employeeId)
     {
         try
@@ -132,7 +126,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result> SaveChangesAsync()
     {
         try
@@ -146,7 +139,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result<bool>> ShiftExistsByIdAsync(int id)
     {
         try
@@ -162,7 +154,6 @@ public class ShiftsRepository : IShiftsRepository
             return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result<bool>> OverlapsExistingShiftAsync(Shift shift)
     {
         try

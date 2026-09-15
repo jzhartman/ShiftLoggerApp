@@ -5,9 +5,7 @@ namespace ShiftLogger.Infrastructure.Database;
 
 public class ShiftsDbContext : DbContext
 {
-    public ShiftsDbContext(DbContextOptions<ShiftsDbContext> options) : base(options)
-    {
-    }
+    public ShiftsDbContext(DbContextOptions<ShiftsDbContext> options) : base(options) { }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Shift> Shifts { get; set; }
 
@@ -89,8 +87,5 @@ public class ShiftsDbContext : DbContext
         }
 
         Employees.RemoveRange(Employees);
-
-
     }
-
 }

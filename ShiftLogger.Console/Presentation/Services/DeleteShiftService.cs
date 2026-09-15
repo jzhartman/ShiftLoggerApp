@@ -60,8 +60,6 @@ internal class DeleteShiftService
                 Messages.Cancelled("Shift not deleted.");
                 returnToMenu = true;
             }
-
-
         }
     }
 }

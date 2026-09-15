@@ -21,7 +21,6 @@ internal static class UserInput
 
         return AnsiConsole.Prompt(namePrompt);
     }
-
     internal static int GetNumberFromUser(string message, int maximum)
     {
         var numberPrompt = new TextPrompt<int>(message)
@@ -37,7 +36,6 @@ internal static class UserInput
 
         return AnsiConsole.Prompt(numberPrompt);
     }
-
     internal static DateTime GetTimeFromUser(string message, bool dateOnly = false)
     {
         var timeFormatToUse = _timeFormat;
@@ -64,7 +62,6 @@ internal static class UserInput
 
         return DateTime.ParseExact(dateString, timeFormatToUse, CultureInfo.InvariantCulture);
     }
-
     internal static DateTime GetUpdatedTimeFromUser(string message)
     {
         var dateString = AnsiConsole.Prompt(
@@ -91,7 +88,6 @@ internal static class UserInput
 
         return DateTime.ParseExact(dateString, _timeFormat, CultureInfo.InvariantCulture);
     }
-
     internal static bool GetConfirmation(string message)
     {
         return AnsiConsole.Confirm(message);

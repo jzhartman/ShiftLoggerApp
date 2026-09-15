@@ -97,7 +97,6 @@ internal class ShiftApiClient : IShiftApiClient
             return Result<List<ShiftDto>>.Failure(new Error("ApiError", ex.Message));
         }
     }
-
     public async Task<Result> UpdateAsync(UpdateShiftCommand command)
     {
         try

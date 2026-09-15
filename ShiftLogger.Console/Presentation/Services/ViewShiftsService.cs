@@ -17,7 +17,6 @@ internal class ViewShiftsService
     private readonly UpdateShiftService _updateShiftService;
     private readonly DeleteShiftService _deleteShiftService;
 
-
     public ViewShiftsService(IShiftApiClient shiftApiClient, ShiftTableView shiftTableView, ShiftMenuView shiftMenuView,
                             UpdateShiftService updateShiftService, DeleteShiftService deleteShiftService)
     {

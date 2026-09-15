@@ -12,17 +12,12 @@ public class Program
 
         var connectionString = builder.Configuration.GetConnectionString("Default");
 
-
         builder.Services.AddControllers();
         builder.Services.AddInfrastrucutre(connectionString);
         builder.Services.AddApplication();
 
-
-        //builder.Services.AddTransient<CreateShiftHandler>();
-
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             using var scope = app.Services.CreateScope();
@@ -31,12 +26,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-
         app.MapControllers();
-
         app.Run();
     }
 }

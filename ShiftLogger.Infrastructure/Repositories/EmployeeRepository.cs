@@ -14,6 +14,7 @@ public class EmployeeRepository : IEmployeeRepository
     {
         _context = context;
     }
+
     public async Task<Result> CreateEmployeeAsync(Employee employee)
     {
         try
@@ -40,7 +41,6 @@ public class EmployeeRepository : IEmployeeRepository
             return Result<List<Employee>>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result<Employee?>> GetEmployeeByIdAsync(int id)
     {
         try
@@ -114,7 +114,6 @@ public class EmployeeRepository : IEmployeeRepository
             return Result<bool>.Failure(new Error("DatabaseError", ex.Message));
         }
     }
-
     public async Task<Result<bool>> EmployeeExistsByFullNameAsync(Employee employee)
     {
         try

@@ -66,7 +66,6 @@ internal class EmployeeApiClient : IEmployeeApiClient
             return Result<EmployeeDto>.Failure(new Error("ApiError", ex.Message));
         }
     }
-
     public async Task<Result> CreateAsync(CreateEmployeeCommand command)
     {
         try
