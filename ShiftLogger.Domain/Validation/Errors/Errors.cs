@@ -5,30 +5,30 @@ public static class Errors
     //ToDo: Make all error codes unique by appending a final digit or character to the end of duplicates
 
     public static readonly Error None = Error.None;
-    public static readonly Error GenericNull = new("GenericNull", "Cannot be null");
 
-    public static readonly Error QueryReturnedNull = new("Q-404", "The attempted query returned null.");
-    public static readonly Error NoChangesToUpdatedData = new("SR-404", "Updated data was the same as the original data.");
-    public static readonly Error RecordMismatch = new("SR-409", "There is a mismatch between the data sent and the data returned.");
+    // Data Not Found
+    public static readonly Error QueryReturnedNull = new("SL40401", "The attempted query returned null.");
+    public static readonly Error ShiftIdNotFound = new("SL40402", "The requested shift could not be found.");
+    public static readonly Error ShiftsNotFoundForEmployeeId = new("SL40403", "No shifts found for the specified employee.");
+    public static readonly Error ShiftCountNull = new("SL40404", "The shift count query returned null for the specified employee.");
+    public static readonly Error EmployeeNotFound = new("SL40405", "The requested employee could not be found.");
+    public static readonly Error ShiftOverlapReturnedNull = new("SL40406", "Shift overlap check returned null.");
 
 
-    public static readonly Error NoSaveData = new("SR-409", "Saved failed because no changes were detected.");
-    public static readonly Error SaveFailed = new("SR-500", "Save failed for unknown reason.");
+    // Conflicts
+    public static readonly Error NoChangesToUpdatedData = new("SL40901", "Updated data was the same as the original data.");
+    public static readonly Error RecordMismatch = new("SL40902", "There is a mismatch between the data sent and the data returned.");
+    public static readonly Error NoSaveData = new("SL40903", "Saved failed because no changes were detected.");
+    public static readonly Error ShiftAlreadyExists = new("SL40904", "A shift with the requested data already exists.");
+    public static readonly Error EmployeeAlreadyExists = new("SL40905", "An employee with that name already exists.");
+    public static readonly Error EmployeeNameIsBlank = new("SL40906", "Employee first and last names cannot be blank.");
+    public static readonly Error DateRangeError = new("SL40907", "The end date cannot precede the start date.");
+    public static readonly Error ClockInTimePrecedesClockOutTime = new("SL40908", "The Clock In time cannot be on or after the Clock Out time.");
+    public static readonly Error NewShiftOverlapsExistingShift = new("SL40909", "This shift cannot overlap an existing shift.");
 
-    public static readonly Error ShiftIdNotFound = new("SR-404", "The requested shift could not be found.");
-    public static readonly Error ShiftsNotFoundForEmployeeId = new("SR-404", "No shifts found for the specified employee.");
-    public static readonly Error ShiftAlreadyExists = new("SR-409", "A shift with the requested data already exists.");
-    public static readonly Error ShiftCountNull = new("SR-404", "The shift count query returned null for the specified employee.");
 
-    public static readonly Error EmployeeNotFound = new("ER-404", "The requested employee could not be found.");
-    public static readonly Error EmployeeAlreadyExists = new("ER-409", "An employee with that name already exists.");
-    public static readonly Error EmployeeNameIsBlank = new("ER-409", "Employee first and last names cannot be blank.");
-
-    public static readonly Error DateRangeError = new("DR-409", "The end date cannot precede the start date.");
-    public static readonly Error ClockInTimePrecedesClockOutTime = new("SH-409", "The Clock In time cannot be on or after the Clock Out time.");
-    public static readonly Error ShiftOverlapReturnedNull = new("SH-404", "Shift overlap check returned null.");
-    public static readonly Error NewShiftOverlapsExistingShift = new("SH-409", "This shift cannot overlap an existing shift.");
-
-    public static readonly Error DeserializationError = new("JSON-ERROR", "Could not parse API response.");
+    // Unknown Errors
+    public static readonly Error SaveFailed = new("SL50001", "Save failed for unknown reason.");
+    public static readonly Error DeserializationError = new("SL50002", "Could not parse API response.");
 
 }
