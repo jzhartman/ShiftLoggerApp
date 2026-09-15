@@ -18,14 +18,71 @@ public class ShiftsDbContext : DbContext
     {
         if (!(Shifts.Count() > 0))
         {
-            var employeeShifts = new List<Shift>
+            var srShifts = CreateShiftList();
+            var tsShifts = CreateShiftList();
+            var bbShifts = CreateShiftList();
+            var ppShifts = CreateShiftList();
+            var nrShifts = CreateShiftList();
+            var cbShifts = CreateShiftList();
+
+            if (!(Employees.Count() > 0))
             {
+                Employees.AddRange([
+                    new Employee
+                    {
+                        FirstName = "Steve",
+                        LastName = "Rogers",
+                        Shifts = srShifts
+                    },
+                    new Employee
+                    {
+                        FirstName = "Tony",
+                        LastName = "Stark",
+                        Shifts = tsShifts
+                    }
+                    ,
+                    new Employee
+                    {
+                        FirstName = "Bruce",
+                        LastName = "Banner",
+                        Shifts = bbShifts
+                    },
+                    new Employee
+                    {
+                        FirstName = "Peter",
+                        LastName = "Parker",
+                        Shifts = ppShifts
+                    },
+                    new Employee
+                    {
+                        FirstName = "Natasha",
+                        LastName = "Romanov",
+                        Shifts = nrShifts
+                    },
+                    new Employee
+                    {
+                        FirstName = "Clint",
+                        LastName = "Barton",
+                        Shifts = cbShifts
+                    }
+                    ]);
+
+                SaveChanges();
+            }
+        }
+
+        Employees.RemoveRange(Employees);
+    }
+
+    private List<Shift> CreateShiftList()
+    {
+        return new List<Shift> {
                 new Shift
                 {
                     ClockInTime = new DateTime(2026, 07, 06, 08, 00, 00),
                     ClockOutTime = new DateTime(2026, 07, 06, 17, 00, 00)
                 },
-                            new Shift
+                new Shift
                 {
                     ClockInTime = new DateTime(2026, 07, 07, 08, 00, 00),
                     ClockOutTime = new DateTime(2026, 07, 07, 17, 00, 00)
@@ -45,12 +102,12 @@ public class ShiftsDbContext : DbContext
                     ClockInTime = new DateTime(2026, 07, 10, 08, 00, 00),
                     ClockOutTime = new DateTime(2026, 07, 10, 17, 00, 00)
                 },
-                            new Shift
+                new Shift
                 {
                     ClockInTime = new DateTime(2026, 07, 13, 08, 00, 00),
                     ClockOutTime = new DateTime(2026, 07, 13, 17, 00, 00)
                 },
-                            new Shift
+                new Shift
                 {
                     ClockInTime = new DateTime(2026, 07, 14, 08, 00, 00),
                     ClockOutTime = new DateTime(2026, 07, 14, 17, 00, 00)
@@ -70,22 +127,6 @@ public class ShiftsDbContext : DbContext
                     ClockInTime = new DateTime(2026, 07, 17, 08, 00, 00),
                     ClockOutTime = new DateTime(2026, 07, 17, 17, 00, 00)
                 }
-            };
-
-            if (!(Employees.Count() > 0))
-            {
-                Employees.Add(
-                    new Employee
-                    {
-                        FirstName = "Jason",
-                        LastName = "Hartman",
-                        Shifts = employeeShifts
-                    });
-
-                SaveChanges();
-            }
-        }
-
-        Employees.RemoveRange(Employees);
+        };
     }
 }
