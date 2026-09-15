@@ -16,26 +16,36 @@ internal class DeleteEmployeeService
 
     public async Task RunAsync(EmployeeViewModel employee)
     {
-        var confirmDelete = UserInput.GetConfirmation($"Are you sure you want to delete [green]{employee.FirstName} {employee.LastName}[/]?");
+        var retryDelete = true;
 
-        Messages.PrintBlankLines(1);
-        if (confirmDelete)
+        while (retryDelete)
         {
-            var result = await _employeeApiClient.DeleteAsync(new DeleteEmployeeCommand(employee.Id, employee.FirstName, employee.LastName));
+            var confirmDelete = UserInput.GetConfirmation($"Are you sure you want to delete [green]{employee.FirstName} {employee.LastName}[/]?");
 
-            if (result.IsSuccess)
-                Messages.Success($"Deleted [green]{employee.FirstName} {employee.LastName}[/]");
+            Messages.PrintBlankLines(1);
+            if (confirmDelete)
+            {
+                var result = await _employeeApiClient.DeleteAsync(new DeleteEmployeeCommand(employee.Id, employee.FirstName, employee.LastName));
 
-            if (result.IsFailure)
-                Messages.OutputErrorMessage(result.Errors);
+                if (result.IsSuccess)
+                {
+                    Messages.Success($"Deleted [green]{employee.FirstName} {employee.LastName}[/]");
+                    Messages.PrintBlankLines(1);
+                    Messages.PressAnyKeyToContinue();
+                    break;
+                }
+
+                if (result.IsFailure)
+                    Messages.OutputErrorMessage(result.Errors);
+            }
+            else
+            {
+                Messages.Cancelled($"Did not delete [green]{employee.FirstName} {employee.LastName}[/]");
+            }
+
+            Messages.PrintBlankLines(1);
+            retryDelete = UserInput.GetConfirmation($"Retry deleting employee [green]{employee.FirstName} {employee.LastName}[/]?");
         }
-        else
-        {
-            Messages.Cancelled($"Did not delete [green]{employee.FirstName} {employee.LastName}[/]");
-        }
-
-        Messages.PrintBlankLines(1);
-        Messages.PressAnyKeyToContinue();
 
         return;
     }
