@@ -2,8 +2,6 @@
 
 public static class Errors
 {
-    //ToDo: Make all error codes unique by appending a final digit or character to the end of duplicates
-
     public static readonly Error None = Error.None;
 
     // Data Not Found
