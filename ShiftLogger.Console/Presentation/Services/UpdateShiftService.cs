@@ -98,7 +98,7 @@ internal class UpdateShiftService
 
         var durationMessage = ((originalClockInTime == newClockInTime) && (originalClockOutTime == newClockOutTime)) ?
             "[green]No Changes[/]" :
-            $"[yellow]{(originalClockOutTime - originalClockInTime).ToString(@"hh\:mm\:ss")}[/]\tchanged to" +
+            $"[yellow]{(originalClockOutTime - originalClockInTime).ToString(@"hh\:mm\:ss")}[/]\t\tchanged to" +
             $"\t[green]{(newClockOutTime - newClockInTime).ToString(@"hh\:mm\:ss")}[/]";
 
 
